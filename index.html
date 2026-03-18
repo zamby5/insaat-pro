@@ -972,6 +972,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderTimeline();
 });
 window.addEventListener('resize',()=>{if(cur===3)renderSection();});
+</script><script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
 </script>
 </body>
 </html>
