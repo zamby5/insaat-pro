@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark" data-mode="hizli">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="İnşaat Pro">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0e1a">
+<title>İnşaat Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root{
+  --bg:#0a0e1a;--s1:#111827;--s2:#1c2333;--s3:#252f42;
+  --tx:#e8edf5;--tx2:#8892a4;--tx3:#5a6478;
+  --ya:#f59e0b;--yadim:rgba(245,158,11,.14);
+  --ma:#3b82f6;--madim:rgba(59,130,246,.12);
+  --ye:#10b981;--yedim:rgba(16,185,129,.11);
+  --ki:#ef4444;--kidim:rgba(239,68,68,.11);
+  --mor:#8b5cf6;
+  --br:rgba(255,255,255,.07);--br2:rgba(255,255,255,.12);
+  --r:14px;--rsm:9px;--shd:0 4px 20px rgba(0,0,0,.4);
+  --hh:54px;--nh:62px;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif
+}
+[data-theme=light]{
+  --bg:#eff1f8;--s1:#fff;--s2:#f4f6fb;--s3:#eaedf6;
+  --tx:#0d1117;--tx2:#4b5566;--tx3:#9ca3b8;
+  --ya:#d97706;--yadim:rgba(217,119,6,.1);
+  --ma:#2563eb;--madim:rgba(37,99,235,.08);
+  --ye:#059669;--yedim:rgba(5,150,105,.08);
+  --ki:#dc2626;--kidim:rgba(220,38,38,.08);
+  --br:rgba(0,0,0,.07);--br2:rgba(0,0,0,.12);--shd:0 2px 12px rgba(0,0,0,.08)
+}
+/* ─── PRO MODE ACCENT ─── */
+[data-mode=pro]{--ya:#8b5cf6;--yadim:rgba(139,92,246,.14)}
+
+/* ─── RESET ─── */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── HEADER ─── */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--s1);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 11px;gap:7px;z-index:200;backdrop-filter:blur(14px)}
+.hlogo{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--ya);flex:1;line-height:1;letter-spacing:-.3px}
+.hlogo small{display:block;font-family:var(--fb);font-size:9.5px;color:var(--tx2);font-weight:400;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.hbtn{width:32px;height:32px;border:1px solid var(--br2);border-radius:8px;background:var(--s2);color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:.18s;border:none}
+.hbtn:active{transform:scale(.9)}
+.mode-sw{display:flex;background:var(--s3);border-radius:20px;padding:3px;gap:2px}
+.msb{padding:4px 10px;border-radius:16px;border:none;background:transparent;font-size:10px;font-weight:700;font-family:var(--fd);color:var(--tx3);cursor:pointer;transition:.18s;white-space:nowrap}
+.msb.on{background:var(--ya);color:#000}
+
+/* ─── BOTTOM NAV ─── */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);background:var(--s1);border-top:1px solid var(--br);display:flex;align-items:stretch;z-index:200;padding:0 4px;overflow-x:auto}
+.bnav::-webkit-scrollbar{display:none}
+.ni{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 6px;cursor:pointer;min-width:50px;color:var(--tx3);transition:.18s;flex:1;position:relative}
+.ni.on{color:var(--ya)}
+.ni .ic{font-size:18px;line-height:1}
+.ni .lb{font-size:9px;font-weight:600;text-align:center;white-space:nowrap}
+.ni::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--ya);border-radius:2px;opacity:0;transition:.2s}
+.ni.on::after{opacity:1}
+
+/* ─── MAIN ─── */
+.main{margin-top:var(--hh);margin-bottom:var(--nh);padding:13px;overflow-y:auto}
+.tab{display:none}.tab.on{display:block}
+
+/* ─── CARDS ─── */
+.card{background:var(--s1);border-radius:var(--r);padding:14px;margin-bottom:11px;border:1px solid var(--br)}
+.ct{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;gap:7px;letter-spacing:-.2px}
+.badge{font-size:8px;padding:2px 7px;border-radius:20px;font-weight:700;font-family:var(--fb)}
+
+/* ─── GRID / FORM ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.gc{grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:3px;margin-bottom:0}
+label{font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.6px;font-family:var(--fd);line-height:1.3;display:block;margin-bottom:3px}
+input,select{background:var(--s2);border:1px solid var(--br2);border-radius:var(--rsm);padding:9px 10px;color:var(--tx);font-size:13px;width:100%;font-family:var(--fb);transition:.18s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none;border-color:var(--ya);background:var(--s3)}
+select option{background:var(--s1)}
+input[type=range]{padding:5px 0;accent-color:var(--ya);background:transparent;border:none}
+input[type=checkbox]{width:17px;height:17px;flex-shrink:0;cursor:pointer;accent-color:var(--ya)}
+
+/* ─── BUTTONS ─── */
+.btn{padding:10px 14px;border-radius:var(--rsm);font-size:13px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.18s;font-family:var(--fb)}
+.btn:active{transform:scale(.95)}
+.btnp{background:var(--ya);color:#0d0a00}
+.btno{background:var(--s2);border:1px solid var(--br2);color:var(--tx)}
+.btnf{width:100%;margin-top:9px}
+.btnpro{background:var(--mor);color:#fff}
+
+/* ─── STAT CARDS ─── */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px}
+.sc{background:var(--s2);border-radius:10px;padding:9px 6px;text-align:center;border:1px solid var(--br)}
+.sv{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--ya);line-height:1}
+.sl{font-size:9px;color:var(--tx2);margin-top:3px;line-height:1.3}
+.sv.bl{color:var(--ma)}.sv.gr{color:var(--ye)}.sv.rd{color:var(--ki)}
+
+/* ─── RANGE ROW ─── */
+.rg{display:flex;align-items:center;gap:7px}
+.rg input{flex:1}
+.rv{font-family:var(--fd);font-weight:700;color:var(--ya);min-width:38px;text-align:right;font-size:14px}
+
+/* ─── TYPE GRID ─── */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tc{border:2px solid var(--br2);border-radius:11px;padding:10px 4px;text-align:center;cursor:pointer;transition:.18s}
+.tc.on{border-color:var(--ya);background:var(--yadim)}
+.tc .ic{font-size:22px}.tc .nm{font-size:9px;font-weight:700;margin-top:4px;font-family:var(--fd)}
+
+/* ─── APT ROW ─── */
+.ar{display:flex;align-items:center;gap:8px;padding:8px;background:var(--s2);border-radius:8px;margin-bottom:5px;border:1px solid var(--br)}
+.abg{background:var(--ya);color:#000;border-radius:5px;padding:3px 7px;font-size:10px;font-weight:800;min-width:34px;text-align:center;font-family:var(--fd)}
+.ai{flex:1}.ai .at{font-size:12px;font-weight:600}.ai .ad{font-size:10px;color:var(--tx2)}
+.ac{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--ya)}
+
+/* ─── SWOT ─── */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sw{border-radius:10px;padding:11px;border:1px solid transparent}
+.sw.s{background:var(--yedim);border-color:rgba(16,185,129,.2)}.sw.w{background:var(--kidim);border-color:rgba(239,68,68,.2)}
+.sw.o{background:var(--madim);border-color:rgba(59,130,246,.2)}.sw.t{background:var(--yadim);border-color:rgba(245,158,11,.2)}
+.swt{font-size:9.5px;font-weight:800;font-family:var(--fd);letter-spacing:.5px;margin-bottom:6px}
+.sw.s .swt{color:var(--ye)}.sw.w .swt{color:var(--ki)}.sw.o .swt{color:var(--ma)}.sw.t .swt{color:var(--ya)}
+.swi{font-size:10px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04);color:var(--tx2);line-height:1.4}
+[data-theme=light] .swi{border-bottom-color:rgba(0,0,0,.05)}
+
+/* ─── GUIDE ─── */
+.gg{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.gi{background:var(--s2);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:.18s;border:1px solid var(--br)}
+.gi:active{background:var(--yadim);border-color:var(--ya)}
+.gi .ic{font-size:20px}.gi .nm{font-size:9px;font-weight:700;margin-top:4px;font-family:var(--fd)}
+#guide-text{font-size:12px;line-height:1.8;color:var(--tx2);white-space:pre-line}
+
+/* ─── ACTION GRID ─── */
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.ab{padding:13px 6px;border-radius:10px;border:1px solid var(--br2);background:var(--s2);color:var(--tx);font-size:9px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.18s;font-family:var(--fd)}
+.ab .ic{font-size:20px}.ab:active{background:var(--yadim);border-color:var(--ya);transform:scale(.95)}
+
+/* ─── PBAR ─── */
+.pb{background:var(--s3);border-radius:100px;height:7px;overflow:hidden;margin-top:7px}
+.pf{height:100%;border-radius:100px;background:var(--ya);transition:width .6s}
+
+/* ─── ROTATION ─── */
+.rc{display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 10px}
+.rb{width:32px;height:32px;border:1px solid var(--br2);border-radius:7px;background:var(--s2);color:var(--tx);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s}
+.rb:active{background:var(--yadim);border-color:var(--ya)}
+.rang{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--ya);min-width:38px;text-align:center;background:var(--s2);border-radius:6px;padding:3px 4px}
+
+/* ─── CURRENCY ─── */
+.crow{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--br)}
+.crow:last-child{border-bottom:none}
+.cflag{font-size:20px;min-width:28px;text-align:center}
+.cinfo{flex:1;margin-left:8px}
+.cpair{font-size:12px;font-weight:700;font-family:var(--fd)}
+.csub{font-size:9px;color:var(--tx3)}
+.cval{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--ya)}
+
+/* ─── TIMELINE ─── */
+.tlp{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.tll{font-size:9.5px;font-weight:600;min-width:82px;color:var(--tx2)}
+.tlbw{flex:1;background:var(--s3);border-radius:100px;height:16px;overflow:hidden}
+.tlb{height:100%;border-radius:100px;display:flex;align-items:center;padding-left:5px;font-size:8px;font-weight:700;color:rgba(0,0,0,.85)}
+.tld{font-size:9px;color:var(--tx3);min-width:28px;text-align:right}
+
+/* ─── VARDIYA ─── */
+.vrow{display:flex;align-items:center;gap:7px;padding:8px 10px;background:var(--s2);border-radius:9px;margin-bottom:5px;border:1px solid var(--br)}
+.vdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.vinfo{flex:1}
+.vtitle{font-size:12px;font-weight:600}
+.vsub{font-size:10px;color:var(--tx2)}
+.vsaat{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--ya)}
+.vdel{background:var(--kidim);border:none;border-radius:6px;color:var(--ki);cursor:pointer;padding:4px 8px;font-size:11px;font-weight:700}
+
+/* ─── DIVIDER ─── */
+.dv{height:1px;background:var(--br);margin:11px 0}
+
+/* ─── SECTION LABEL ─── */
+.sec-lbl{display:flex;align-items:center;gap:8px;margin:4px 0 9px}
+.sec-lbl::before,.sec-lbl::after{content:'';flex:1;height:1px;background:var(--br)}
+.sec-lbl span{font-size:9px;font-weight:800;color:var(--tx3);letter-spacing:1.2px;font-family:var(--fd);white-space:nowrap}
+
+/* ─── PRO TAG ─── */
+.ptag{background:linear-gradient(135deg,var(--mor),var(--ma));color:#fff;border-radius:4px;font-size:7.5px;padding:1px 5px;font-weight:700;vertical-align:middle;margin-left:4px}
+
+/* ─── SUMROW ─── */
+.smr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--br);font-size:12px}
+.smr:last-child{border-bottom:none}
+.smk{color:var(--tx2)}.smv{font-weight:700;font-family:var(--fd);font-size:13px}
+
+/* ─── MAP ─── */
+#map{height:245px;border-radius:11px;overflow:hidden}
+
+/* ─── CANVAS ─── */
+#sec-canvas{width:100%;border-radius:10px;display:block}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:calc(var(--nh) + 10px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--s1);border:1px solid var(--br2);border-radius:20px;padding:8px 16px;font-size:12px;font-weight:600;z-index:400;opacity:0;transition:.28s;pointer-events:none;white-space:nowrap;box-shadow:var(--shd)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── FULLSCREEN BUTTON ─── */
+.fsbtn{font-size:14px}
+
+/* ─── PRINT ─── */
+@media print{.hdr,.bnav,.no-print{display:none!important}.main{margin:0;padding:10px}.tab{display:block!important}.card{break-inside:avoid;border:1px solid #ccc}body{background:#fff;color:#000}}
+
+/* ─── LANDSCAPE ─── */
+@media(orientation:landscape)and(max-height:480px){:root{--hh:42px;--nh:50px}.ni .lb{display:none}.ni{min-width:40px}.main{padding:8px}}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:var(--br2);border-radius:2px}
+
+/* ─── PRO only elements hide in hizli ─── */
+[data-mode=hizli] .pro-only{display:none!important}
+[data-mode=pro] .hizli-only{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hlogo">🏗️ İnşaat Pro<small id="h-proj">—</small></div>
+  <div class="mode-sw">
+    <button class="msb on" id="msb-h" onclick="setMode('hizli')">⚡ <span data-k="mode.h">Hızlı</span></button>
+    <button class="msb" id="msb-p" onclick="setMode('pro')">🔬 <span data-k="mode.p">Pro</span></button>
+  </div>
+  <button class="hbtn" onclick="toggleTheme()" id="tbtn" title="Tema">🌙</button>
+  <button class="hbtn" onclick="toggleLang()" id="lbtn" style="font-size:10px;font-weight:800;font-family:var(--fd)">TR</button>
+  <button class="hbtn fsbtn" onclick="toggleFS()" id="fsbtn" title="Tam Ekran">⛶</button>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+
+<!-- ══════════════════════════════════
+     TAB 0 · PROJE
+══════════════════════════════════ -->
+<div class="tab on" id="tab-0">
+  <div class="card">
+    <div class="ct">📋 <span data-k="ct.proje">Proje & Parsel Bilgileri</span></div>
+    <div class="g2">
+      <div class="fg gc"><label data-k="lbl.proje">Proje Adı</label><input id="proje-adi" type="text" data-ph="ph.proje" oninput="updProj()"></div>
+      <div class="fg"><label data-k="lbl.il">İl</label><select id="il-sel" onchange="loadIlce()"></select></div>
+      <div class="fg"><label data-k="lbl.ilce">İlçe</label><select id="ilce-sel"><option value="">—</option></select></div>
+      <div class="fg"><label data-k="lbl.mah">Mahalle</label><input id="mahalle" type="text" data-ph="ph.mah"></div>
+      <div class="fg"><label data-k="lbl.ada">Ada No</label><input id="ada" type="number" placeholder="123"></div>
+      <div class="fg"><label data-k="lbl.parsel">Parsel No</label><input id="parsel" type="number" placeholder="45"></div>
+      <div class="fg"><label data-k="lbl.alan">Parsel Alanı (m²)</label><input id="parsel-alan" type="number" placeholder="500" oninput="calc()"></div>
+      <div class="fg"><label>TAKS</label><input id="taks" type="number" value="0.40" step="0.05" min="0.1" max="0.9" oninput="calc()"></div>
+      <div class="fg"><label data-k="lbl.kaks">KAKS / Emsal</label><input id="kaks" type="number" value="2.00" step="0.1" min="0.1" max="8" oninput="calc()"></div>
+      <div class="fg"><label data-k="lbl.katy">Kat Yüksekliği (m)</label><input id="kat-y" type="number" value="3.0" step="0.5" oninput="calc()"></div>
+    </div>
+  </div>
+  <div class="card" id="res-card" style="display:none">
+    <div class="ct">📊 <span data-k="ct.hesap">Temel Hesaplar</span></div>
+    <div class="sr">
+      <div class="sc"><div class="sv" id="r-ins">—</div><div class="sl" data-k="sl.ins">Toplam m²</div></div>
+      <div class="sc"><div class="sv bl" id="r-kat">—</div><div class="sl" data-k="sl.kat">Kat Sayısı</div></div>
+      <div class="sc"><div class="sv gr" id="r-tab">—</div><div class="sl" data-k="sl.tab">Taban m²</div></div>
+    </div>
+    <div class="sr">
+      <div class="sc"><div class="sv" id="r-net">—</div><div class="sl" data-k="sl.net">Net Satış m²</div></div>
+      <div class="sc"><div class="sv bl" id="r-yuk">—</div><div class="sl" data-k="sl.yuk">Bina Yük. m</div></div>
+      <div class="sc"><div class="sv gr" id="r-dai">—</div><div class="sl" data-k="sl.dai">~Daire</div></div>
+    </div>
+    <button class="btn btnp btnf" onclick="saveData()"><span data-k="btn.kaydet">💾 Kaydet & Güncelle</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 1 · YAPI + KAT KARŞILIĞI
+══════════════════════════════════ -->
+<div class="tab" id="tab-1">
+  <div class="card">
+    <div class="ct">🏘️ <span data-k="ct.yapi">Yapı Kullanım Tipi</span></div>
+    <div class="tg">
+      <div class="tc on" onclick="selT('konut',this)"><div class="ic">🏠</div><div class="nm" data-k="t.konut">Konut</div></div>
+      <div class="tc" onclick="selT('ticari',this)"><div class="ic">🏢</div><div class="nm" data-k="t.ticari">Ticari</div></div>
+      <div class="tc" onclick="selT('karma',this)"><div class="ic">🏬</div><div class="nm" data-k="t.karma">Karma</div></div>
+      <div class="tc" onclick="selT('gticar',this)"><div class="ic">🏪</div><div class="nm" data-k="t.gticar">Giriş Ticari</div></div>
+      <div class="tc" onclick="selT('ofis',this)"><div class="ic">💼</div><div class="nm" data-k="t.ofis">Ofis</div></div>
+      <div class="tc" onclick="selT('sanayi',this)"><div class="ic">🏭</div><div class="nm" data-k="t.sanayi">Sanayi</div></div>
+    </div>
+  </div>
+  <div class="card" id="oran-card" style="display:none">
+    <div class="ct">⚖️ <span data-k="ct.oran">Ticari / Konut Oranı</span></div>
+    <div class="fg"><label data-k="lbl.toran">Ticari Oran (%)</label>
+    <div class="rg"><input type="range" id="toran" min="5" max="80" value="20" oninput="S.toran=+this.value;document.getElementById('toranv').textContent='%'+this.value;drawSection()"><div class="rv" id="toranv">%20</div></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">🤝 <span data-k="ct.kk">Kat Karşılığı Hesabı</span></div>
+    <div class="g2">
+      <div class="fg gc"><label data-k="lbl.arsapct">Arsa Sahibi Payı (%)</label>
+      <div class="rg"><input type="range" id="arsa-pct" min="20" max="60" value="40" oninput="updArsa(this.value)"><div class="rv" id="apctv">%40</div></div></div>
+      <div class="fg"><label data-k="lbl.mutpct">Müteahhit Payı</label>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--ma);padding-top:3px" id="mutpct">%60</div>
+      </div>
+      <div class="fg"><label data-k="lbl.avgm2">Ort. Daire m²</label><input id="avg-m2" type="number" value="90" oninput="calcKK()"></div>
+      <div class="fg"><label data-k="lbl.sfiyat">Satış ₺/m²</label><input id="sfiyat" type="number" value="50000" oninput="calcKK()"></div>
+      <div class="fg"><label data-k="lbl.imaliyet">İnşaat ₺/m²</label><input id="imaliyet" type="number" value="15000" oninput="calcKK()"></div>
+      <div class="fg"><label data-k="lbl.ortak">Ortak Alan (%)</label><input id="ortak" type="number" value="25" min="10" max="45" oninput="calcKK()"></div>
+    </div>
+    <div class="dv"></div>
+    <div id="kk-res" style="display:none">
+      <div class="sr">
+        <div class="sc"><div class="sv gr" id="kk-ad">—</div><div class="sl" data-k="sl.arsad">Arsa Dairesi</div></div>
+        <div class="sc"><div class="sv bl" id="kk-md">—</div><div class="sl" data-k="sl.mutd">Müt. Dairesi</div></div>
+        <div class="sc"><div class="sv" id="kk-kar">—</div><div class="sl" data-k="sl.karm">Kâr Marjı</div></div>
+      </div>
+      <div class="sr">
+        <div class="sc"><div class="sv gr" id="kk-gl" style="font-size:11px">—</div><div class="sl" data-k="sl.topgl">Toplam Gelir</div></div>
+        <div class="sc"><div class="sv bl" id="kk-net" style="font-size:11px">—</div><div class="sl" data-k="sl.mutnet">Müt. Net Kâr</div></div>
+        <div class="sc"><div class="sv" id="kk-av" style="font-size:11px">—</div><div class="sl" data-k="sl.arsav">Arsa Değeri</div></div>
+      </div>
+    </div>
+    <button class="btn btnp btnf" onclick="calcKK()"><span data-k="btn.hesapla">🧮 Hesapla</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 2 · OPTİMİZER
+══════════════════════════════════ -->
+<div class="tab" id="tab-2">
+  <div class="card">
+    <div class="ct">🎯 <span data-k="ct.opt">Daire Dağılımı Optimizer</span></div>
+    <div class="g2">
+      <div class="fg"><label data-k="lbl.hedef">Hedef</label>
+        <select id="opt-goal" onchange="runOpt()">
+          <option value="value" data-k="og.val">Max Değer</option>
+          <option value="units" data-k="og.unit">Max Adet</option>
+          <option value="balanced" data-k="og.bal">Dengeli</option>
+        </select>
+      </div>
+      <div class="fg"><label data-k="lbl.ortak">Ortak Alan (%)</label><input id="opt-ortak" type="number" value="25" oninput="runOpt()"></div>
+    </div>
+    <div class="dv"></div>
+    <div id="apt-cfg"></div>
+    <button class="btn btnp btnf" onclick="runOpt()"><span data-k="btn.opt">⚡ Optimize Et</span></button>
+  </div>
+  <div class="card" id="opt-res" style="display:none">
+    <div class="ct">✅ <span data-k="ct.optres">Optimum Dağılım</span></div>
+    <div id="opt-list"></div>
+    <div class="dv"></div>
+    <div class="sr" id="opt-sum"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 3 · KESİT
+══════════════════════════════════ -->
+<div class="tab" id="tab-3">
+  <div class="card">
+    <div class="ct">🏗️ <span data-k="ct.kesit">Bina Kesit Görünümü</span></div>
+    <div class="rc">
+      <button class="rb" onclick="rot(-20)">◀◀</button>
+      <button class="rb" onclick="rot(-5)">‹</button>
+      <span class="rang" id="rlbl">0°</span>
+      <button class="rb" onclick="rot(5)">›</button>
+      <button class="rb" onclick="rot(20)">▶▶</button>
+      <button class="rb" onclick="S.rotY=0;drawSection()" style="font-size:15px">⟳</button>
+    </div>
+    <canvas id="sec-canvas"></canvas>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tx2)"><span style="width:9px;height:9px;background:#3b82f6;border-radius:2px;display:inline-block"></span><span data-k="t.konut">Konut</span></span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tx2)"><span style="width:9px;height:9px;background:#f59e0b;border-radius:2px;display:inline-block"></span><span data-k="t.ticari">Ticari</span></span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tx2)"><span style="width:9px;height:9px;background:#374151;border-radius:2px;display:inline-block"></span><span data-k="t.otopark">Otopark</span></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">📐 <span data-k="ct.katlist">Kat Listesi</span></div>
+    <div id="floor-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 4 · HARİTA  (pro only)
+══════════════════════════════════ -->
+<div class="tab pro-only" id="tab-4">
+  <div class="card" style="padding:12px">
+    <div class="g2" style="margin-bottom:9px">
+      <div class="fg"><label data-k="lbl.mapq">Adres Ara</label><input id="map-q" type="text" data-ph="ph.map"></div>
+      <div class="fg" style="justify-content:flex-end"><button class="btn btnp" style="margin-top:17px" onclick="searchMap()">🔍</button></div>
+    </div>
+    <div id="map"></div>
+    <div class="g3" style="margin-top:9px">
+      <div class="sc"><div class="sv" id="m-lat" style="font-size:11px">—</div><div class="sl" data-k="sl.enlem">Enlem</div></div>
+      <div class="sc"><div class="sv" id="m-lng" style="font-size:11px">—</div><div class="sl" data-k="sl.boylam">Boylam</div></div>
+      <div class="sc"><div class="sv" id="m-zoom" style="font-size:11px">—</div><div class="sl">Zoom</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 5 · ANALİZ  (pro only)
+══════════════════════════════════ -->
+<div class="tab pro-only" id="tab-5">
+  <!-- SWOT -->
+  <div class="card">
+    <div class="ct">📊 <span data-k="ct.swot">SWOT Analizi</span></div>
+    <div class="sg">
+      <div class="sw s"><div class="swt" data-k="sw.s">💪 GÜÇLÜ</div><div id="sw-s"></div></div>
+      <div class="sw w"><div class="swt" data-k="sw.w">⚠️ ZAYIF</div><div id="sw-w"></div></div>
+      <div class="sw o"><div class="swt" data-k="sw.o">🚀 FIRSAT</div><div id="sw-o"></div></div>
+      <div class="sw t"><div class="swt" data-k="sw.t">🎯 TEHDİT</div><div id="sw-t"></div></div>
+    </div>
+    <button class="btn btno btnf no-print" onclick="genSWOT()"><span data-k="btn.guncelle">🔄 Güncelle</span></button>
+  </div>
+  <!-- ROI -->
+  <div class="card">
+    <div class="ct">💰 <span data-k="ct.roi">ROI Analizi</span></div>
+    <div class="g2">
+      <div class="fg"><label data-k="lbl.arsadeg">Arsa Değeri (₺)</label><input id="arsa-deg" type="number" placeholder="5000000" oninput="calcROI()"></div>
+      <div class="fg"><label data-k="lbl.digerg">Diğer Giderler (₺)</label><input id="diger-g" type="number" value="0" oninput="calcROI()"></div>
+    </div>
+    <div id="roi-res" style="display:none">
+      <div class="dv"></div>
+      <div class="sr">
+        <div class="sc"><div class="sv rd" id="roi-mal" style="font-size:11px">—</div><div class="sl" data-k="sl.topmal">Toplam Maliyet</div></div>
+        <div class="sc"><div class="sv gr" id="roi-gel" style="font-size:11px">—</div><div class="sl" data-k="sl.mutgel">Müt. Geliri</div></div>
+        <div class="sc"><div class="sv" id="roi-pct">—</div><div class="sl">ROI %</div></div>
+      </div>
+      <div class="pb"><div class="pf" id="roi-bar" style="width:0%"></div></div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:4px;text-align:right" id="roi-note"></div>
+    </div>
+    <button class="btn btnp btnf" onclick="calcROI()"><span data-k="btn.roi">📈 ROI Hesapla</span></button>
+  </div>
+  <!-- CURRENCY -->
+  <div class="card">
+    <div class="ct">💱 <span data-k="ct.doviz">Canlı Döviz Kurları</span></div>
+    <div id="cur-w"><div style="text-align:center;color:var(--tx3);font-size:11px;padding:14px" data-k="cur.loading">⏳ Yükleniyor...</div></div>
+    <div style="font-size:9px;color:var(--tx3);text-align:right;margin-top:4px" id="cur-time"></div>
+    <button class="btn btno btnf" onclick="fetchCur()"><span data-k="btn.guncelle">🔄 Güncelle</span></button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 6 · SİMÜLATÖR
+══════════════════════════════════ -->
+<div class="tab" id="tab-6">
+  <!-- HIZLI -->
+  <div class="sec-lbl"><span data-k="sec.hizli">HIZLI TAHMİN</span></div>
+  <div class="card" style="border-color:rgba(16,185,129,.25)">
+    <div class="ct" style="color:var(--ye)">🟢 <span data-k="ct.simh">Anlık Simülasyon</span> <span class="badge" style="background:var(--yedim);color:var(--ye)">SLIDER</span></div>
+    <p style="font-size:10px;color:var(--tx3);margin-bottom:12px;line-height:1.5" data-k="sim.note">Kaydırarak anında sonuç — proje verisi gerekmez.</p>
+    <div class="fg" style="margin-bottom:12px">
+      <label data-k="lbl.alan">Parsel Alanı</label>
+      <div class="rg"><input type="range" id="s-par" min="100" max="5000" step="50" value="500" oninput="simUpd()"><div class="rv" id="s-pv">500</div></div>
+    </div>
+    <div class="fg" style="margin-bottom:12px">
+      <label data-k="lbl.kaks">Emsal (KAKS)</label>
+      <div class="rg"><input type="range" id="s-kak" min="0.5" max="6" step="0.1" value="2" oninput="simUpd()"><div class="rv" id="s-kv">2.0</div></div>
+    </div>
+    <div class="fg" style="margin-bottom:12px">
+      <label data-k="lbl.sfiyat">Satış ₺/m²</label>
+      <div class="rg"><input type="range" id="s-fiy" min="5000" max="200000" step="1000" value="50000" oninput="simUpd()"><div class="rv" id="s-fv">50K</div></div>
+    </div>
+    <div class="fg">
+      <label data-k="lbl.imaliyet">İnşaat ₺/m²</label>
+      <div class="rg"><input type="range" id="s-mal" min="3000" max="40000" step="500" value="15000" oninput="simUpd()"><div class="rv" id="s-mv">15K</div></div>
+    </div>
+    <div class="g2" style="margin-top:11px">
+      <div class="sc"><div class="sv" id="s-alan">—</div><div class="sl" data-k="sl.ins">Toplam m²</div></div>
+      <div class="sc"><div class="sv bl" id="s-dai">—</div><div class="sl" data-k="sl.dai">~Daire</div></div>
+    </div>
+    <div class="g3" style="margin-top:7px">
+      <div class="sc"><div class="sv gr" id="s-gel" style="font-size:11px">—</div><div class="sl" data-k="sl.bgelir">Brüt Gelir</div></div>
+      <div class="sc"><div class="sv" id="s-kar" style="font-size:11px">—</div><div class="sl" data-k="sl.netkar">Net Kâr</div></div>
+      <div class="sc"><div class="sv" id="s-mrg">—%</div><div class="sl" data-k="sl.margin">Kâr Marjı</div></div>
+    </div>
+  </div>
+
+  <!-- PRO SIM (pro only) -->
+  <div class="pro-only">
+    <div class="sec-lbl"><span data-k="sec.pro">DETAYLI ANALİZ</span></div>
+    <div class="card" style="border-color:rgba(139,92,246,.3)">
+      <div class="ct" style="color:var(--mor)">⚡ <span data-k="ct.simp">Pro Finansal Analiz</span> <span class="ptag">PRO</span></div>
+      <p style="font-size:10px;color:var(--tx3);margin-bottom:12px;line-height:1.5" data-k="sim.note2">Enflasyon, faiz ve pazarlama maliyetleri dahil.</p>
+      <div style="font-size:9.5px;font-weight:800;color:var(--mor);letter-spacing:.5px;margin-bottom:7px;font-family:var(--fd)">📅 <span data-k="sec.zaman">ZAMAN & FİNANSMAN</span></div>
+      <div class="g2" style="margin-bottom:11px">
+        <div class="fg"><label data-k="lbl.sure">Yapım Süresi (ay)</label><input id="p-sure" type="number" value="24"></div>
+        <div class="fg"><label data-k="lbl.ssure">Satış Süresi (ay)</label><input id="p-satis" type="number" value="12"></div>
+      </div>
+      <div style="font-size:9.5px;font-weight:800;color:var(--ma);letter-spacing:.5px;margin-bottom:7px;font-family:var(--fd)">📈 <span data-k="sec.makro">MAKROEKONOMİK</span></div>
+      <div class="g2" style="margin-bottom:11px">
+        <div class="fg"><label data-k="lbl.faiz">Faiz (%/yıl)</label><input id="p-faiz" type="number" value="35"></div>
+        <div class="fg"><label data-k="lbl.enf">Enflasyon (%/yıl)</label><input id="p-enf" type="number" value="40"></div>
+      </div>
+      <div style="font-size:9.5px;font-weight:800;color:var(--ya);letter-spacing:.5px;margin-bottom:7px;font-family:var(--fd)">💸 <span data-k="sec.sabit">SABİT GİDERLER</span></div>
+      <div class="g2">
+        <div class="fg"><label data-k="lbl.ruhsat">Ruhsat & İzin (₺)</label><input id="p-ruhsat" type="number" value="250000"></div>
+        <div class="fg"><label data-k="lbl.paz">Pazarlama (%)</label><input id="p-paz" type="number" value="3"></div>
+      </div>
+      <button class="btn btnpro btnf" onclick="calcPro()"><span data-k="btn.pro">⚡ Pro Hesapla</span></button>
+      <div id="pro-res" style="display:none"><div class="dv"></div><div id="pro-cont"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 7 · REHBER
+══════════════════════════════════ -->
+<div class="tab" id="tab-7">
+  <div class="card">
+    <div class="ct">📚 <span data-k="ct.rehber">İnşaat Rehberi</span></div>
+    <div class="gg">
+      <div class="gi" onclick="guide('taks')"><div class="ic">📏</div><div class="nm" data-k="g.taks">TAKS</div></div>
+      <div class="gi" onclick="guide('kaks')"><div class="ic">📐</div><div class="nm" data-k="g.kaks">KAKS/Emsal</div></div>
+      <div class="gi" onclick="guide('kk')"><div class="ic">🤝</div><div class="nm" data-k="g.kk">Kat Karşılığı</div></div>
+      <div class="gi" onclick="guide('imar')"><div class="ic">📋</div><div class="nm" data-k="g.imar">İmar Planı</div></div>
+      <div class="gi" onclick="guide('ruhsat')"><div class="ic">🏛️</div><div class="nm" data-k="g.ruhsat">Ruhsat</div></div>
+      <div class="gi" onclick="guide('deprem')"><div class="ic">🌍</div><div class="nm" data-k="g.deprem">Deprem</div></div>
+      <div class="gi" onclick="guide('arsa')"><div class="ic">🗺️</div><div class="nm" data-k="g.arsa">Arsa Değerleme</div></div>
+      <div class="gi" onclick="guide('arsapayi')"><div class="ic">🤲</div><div class="nm" data-k="g.arsapayi">Arsa Payı</div></div>
+      <div class="gi" onclick="guide('tapu')"><div class="ic">📜</div><div class="nm" data-k="g.tapu">Tapu Okuma</div></div>
+      <div class="gi" onclick="guide('maliyet')"><div class="ic">🧱</div><div class="nm" data-k="g.maliyet">Maliyet 2026</div></div>
+      <div class="gi" onclick="guide('sozlesme')"><div class="ic">📝</div><div class="nm" data-k="g.sozlesme">Sözleşme</div></div>
+      <div class="gi pro-only" onclick="guide('kdont')"><div class="ic">🏚️</div><div class="nm" data-k="g.kdont">Kent. Dön.</div></div>
+    </div>
+  </div>
+  <div class="card" id="guide-box" style="display:none">
+    <div class="ct" id="guide-title">📖</div>
+    <div id="guide-text"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 8 · VARDİYA (pro only)
+══════════════════════════════════ -->
+<div class="tab pro-only" id="tab-8">
+  <div class="card">
+    <div class="ct">📋 <span data-k="ct.var">Vardiya & Personel Takibi</span></div>
+    <p style="font-size:10px;color:var(--tx3);margin-bottom:12px;line-height:1.5" data-k="var.note">Manuel vardiya girişi — çalışan, tarih, saat, iş kalemi.</p>
+    <div class="g2">
+      <div class="fg"><label data-k="lbl.vcalisan">Çalışan Adı</label><input id="v-isim" type="text" data-ph="ph.vcalisan"></div>
+      <div class="fg"><label data-k="lbl.vgore">Görev</label>
+        <select id="v-gorev">
+          <option data-k="vg.ustas">Usta</option>
+          <option data-k="vg.kalfa">Kalfa</option>
+          <option data-k="vg.isci">İşçi</option>
+          <option data-k="vg.mihendis">Mühendis</option>
+          <option data-k="vg.operatör">Operatör</option>
+        </select>
+      </div>
+      <div class="fg"><label data-k="lbl.vtarih">Tarih</label><input id="v-tarih" type="date"></div>
+      <div class="fg"><label data-k="lbl.vgir">Giriş Saati</label><input id="v-giris" type="time" value="08:00"></div>
+      <div class="fg"><label data-k="lbl.vcik">Çıkış Saati</label><input id="v-cikis" type="time" value="17:00"></div>
+      <div class="fg"><label data-k="lbl.vucret">Günlük Ücret (₺)</label><input id="v-ucret" type="number" value="1000"></div>
+    </div>
+    <div class="fg" style="margin-top:8px"><label data-k="lbl.vnot">Not</label><input id="v-not" type="text" data-ph="ph.vnot"></div>
+    <button class="btn btnpro btnf" onclick="addVardiya()"><span data-k="btn.varekle">➕ Vardiya Ekle</span></button>
+  </div>
+  <div class="card">
+    <div class="ct">📊 <span data-k="ct.varlist">Vardiya Listesi</span>
+      <span style="margin-left:auto;font-family:var(--fd);font-size:11px;color:var(--ya)" id="var-ozet"></span>
+    </div>
+    <div id="var-list"><div style="text-align:center;color:var(--tx3);font-size:11px;padding:16px" data-k="var.empty">Henüz vardiya eklenmedi</div></div>
+    <div class="g2" style="gap:7px;margin-top:9px" id="var-stats" style="display:none"></div>
+    <div class="dv"></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn btno" style="flex:1;font-size:11px" onclick="exportVardiya()"><span data-k="btn.vcsvexp">📊 Excel'e Aktar</span></button>
+      <button class="btn" style="flex:1;font-size:11px;background:var(--kidim);color:var(--ki)" onclick="clearVardiya()"><span data-k="btn.vtemizle">🗑️ Temizle</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 9 · ÇIKTI
+══════════════════════════════════ -->
+<div class="tab" id="tab-9">
+  <div class="card no-print">
+    <div class="ct">📤 <span data-k="ct.cikti">Paylaşım & Çıktı</span></div>
+    <div class="ag">
+      <div class="ab" onclick="window.print()"><div class="ic">🖨️</div><span data-k="btn.yazdir">Yazdır</span></div>
+      <div class="ab" onclick="shareApp()"><div class="ic">🔗</div><span data-k="btn.paylas">Paylaş</span></div>
+      <div class="ab" onclick="openWA()"><div class="ic">💬</div><span data-k="btn.uzman">Uzmana Sor</span></div>
+      <div class="ab" onclick="exportExcel()"><div class="ic">📊</div><span data-k="btn.excel">Excel/CSV</span></div>
+      <div class="ab" onclick="copyTxt()"><div class="ic">📋</div><span data-k="btn.kopyala">Kopyala</span></div>
+      <div class="ab" onclick="doInstall()"><div class="ic">📱</div><span data-k="btn.inst">Ana Ekrana</span></div>
+    </div>
+  </div>
+  <div class="card" id="sum-card">
+    <div class="ct">📋 <span data-k="ct.ozet">Proje Özeti</span></div>
+    <div id="sum-cont"><div style="padding:16px;text-align:center;color:var(--tx3);font-size:11px" data-k="sum.empty">Proje bilgilerini girerek özeti görüntüleyin</div></div>
+  </div>
+  <div class="card pro-only">
+    <div class="ct">📅 <span data-k="ct.timeline">Proje Zaman Planı</span> <span class="badge" style="background:var(--madim);color:var(--ma)">AUTO</span></div>
+    <div id="tl-cont"><div style="padding:14px;text-align:center;color:var(--tx3);font-size:11px" data-k="tl.note">Simülatör Pro'dan süre alınır</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV (built by JS) -->
+<div class="bnav" id="bnav"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+'use strict';
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+const S={
+  lang:'tr', theme:'dark', mode:'hizli', cur:0,
+  bType:'konut', parsel:0, taks:.4, kaks:2, katSayisi:0,
+  tabanAlan:0, toplamInsaat:0, netAlan:0,
+  arsaPct:40, toran:20, sfiyat:50000, imaliyet:15000,
+  daireSayisi:0, proSure:24, rotY:0,
+  mapObj:null, marker:null, installEvt:null,
+  vardiyas:JSON.parse(localStorage.getItem('vardiyas')||'[]')
+};
+
+// ════════════════════════════════════════
+//  TRANSLATIONS
+// ════════════════════════════════════════
+const TR={
+  'mode.h':'Hızlı','mode.p':'Pro',
+  'ct.proje':'Proje & Parsel Bilgileri','ct.hesap':'Temel Hesaplar',
+  'ct.yapi':'Yapı Kullanım Tipi','ct.oran':'Ticari / Konut Oranı','ct.kk':'Kat Karşılığı Hesabı',
+  'ct.opt':'Daire Dağılımı Optimizer','ct.optres':'Optimum Dağılım',
+  'ct.kesit':'Bina Kesit Görünümü','ct.katlist':'Kat Listesi',
+  'ct.swot':'SWOT Analizi','ct.roi':'ROI Analizi','ct.doviz':'Canlı Döviz Kurları',
+  'ct.simh':'Anlık Simülasyon','ct.simp':'Pro Finansal Analiz',
+  'ct.rehber':'İnşaat Rehberi',
+  'ct.var':'Vardiya & Personel Takibi','ct.varlist':'Vardiya Listesi',
+  'ct.cikti':'Paylaşım & Çıktı','ct.ozet':'Proje Özeti','ct.timeline':'Proje Zaman Planı',
+  'lbl.proje':'Proje Adı','lbl.il':'İl','lbl.ilce':'İlçe','lbl.mah':'Mahalle',
+  'lbl.ada':'Ada No','lbl.parsel':'Parsel No','lbl.alan':'Parsel Alanı (m²)',
+  'lbl.kaks':'KAKS / Emsal','lbl.katy':'Kat Yüksekliği (m)',
+  'lbl.toran':'Ticari Oran (%)','lbl.arsapct':'Arsa Sahibi Payı (%)','lbl.mutpct':'Müteahhit Payı',
+  'lbl.avgm2':'Ort. Daire m²','lbl.sfiyat':'Satış ₺/m²','lbl.imaliyet':'İnşaat ₺/m²','lbl.ortak':'Ortak Alan (%)',
+  'lbl.hedef':'Hedef','lbl.mapq':'Adres Ara',
+  'lbl.arsadeg':'Arsa Değeri (₺)','lbl.digerg':'Diğer Giderler (₺)',
+  'lbl.sure':'Yapım Süresi (ay)','lbl.ssure':'Satış Süresi (ay)',
+  'lbl.faiz':'Faiz (%/yıl)','lbl.enf':'Enflasyon (%/yıl)',
+  'lbl.ruhsat':'Ruhsat & İzin (₺)','lbl.paz':'Pazarlama (%)',
+  'lbl.vcalisan':'Çalışan Adı','lbl.vgore':'Görev','lbl.vtarih':'Tarih',
+  'lbl.vgir':'Giriş Saati','lbl.vcik':'Çıkış Saati','lbl.vucret':'Günlük Ücret (₺)','lbl.vnot':'Not',
+  'ph.proje':'Örn: Bağcılar Karma Proje','ph.mah':'Mahalle adı','ph.map':'İl, İlçe, Mahalle...',
+  'ph.vcalisan':'Ahmet Yılmaz','ph.vnot':'İş kalemi, açıklama...',
+  'sl.ins':'Toplam m²','sl.kat':'Kat Sayısı','sl.tab':'Taban m²','sl.net':'Net Satış m²',
+  'sl.yuk':'Bina Yük. m','sl.dai':'~Daire','sl.arsad':'Arsa Dairesi','sl.mutd':'Müt. Dairesi',
+  'sl.karm':'Kâr Marjı','sl.topgl':'Toplam Gelir','sl.mutnet':'Müt. Net Kâr','sl.arsav':'Arsa Değeri',
+  'sl.topmal':'Toplam Maliyet','sl.mutgel':'Müt. Geliri','sl.enlem':'Enlem','sl.boylam':'Boylam',
+  'sl.bgelir':'Brüt Gelir','sl.netkar':'Net Kâr','sl.margin':'Kâr Marjı',
+  'sw.s':'💪 GÜÇLÜ','sw.w':'⚠️ ZAYIF','sw.o':'🚀 FIRSAT','sw.t':'🎯 TEHDİT',
+  'sec.hizli':'HIZLI TAHMİN','sec.pro':'DETAYLI ANALİZ',
+  'sec.zaman':'ZAMAN & FİNANSMAN','sec.makro':'MAKROEKONOMİK','sec.sabit':'SABİT GİDERLER',
+  'sim.note':'Kaydırarak anında sonuç — proje verisi gerekmez.',
+  'sim.note2':'Enflasyon, faiz ve pazarlama maliyetleri dahil.',
+  'btn.kaydet':'💾 Kaydet & Güncelle','btn.hesapla':'🧮 Hesapla','btn.opt':'⚡ Optimize Et',
+  'btn.roi':'📈 ROI Hesapla','btn.pro':'⚡ Pro Hesapla','btn.guncelle':'🔄 Güncelle',
+  'btn.yazdir':'Yazdır','btn.paylas':'Paylaş','btn.uzman':'Uzmana Sor',
+  'btn.excel':'Excel/CSV','btn.kopyala':'Kopyala','btn.inst':'Ana Ekrana',
+  'btn.varekle':'➕ Vardiya Ekle','btn.vcsvexp':'📊 Excel\'e Aktar','btn.vtemizle':'🗑️ Temizle',
+  'cur.loading':'⏳ Yükleniyor...','cur.upd':'Son güncelleme:',
+  'og.val':'Max Değer','og.unit':'Max Adet','og.bal':'Dengeli',
+  't.konut':'Konut','t.ticari':'Ticari','t.karma':'Karma','t.gticar':'Giriş Ticari',
+  't.ofis':'Ofis','t.sanayi':'Sanayi','t.otopark':'Otopark',
+  'vg.ustas':'Usta','vg.kalfa':'Kalfa','vg.isci':'İşçi','vg.mihendis':'Mühendis','vg.operatör':'Operatör',
+  'var.note':'Manuel vardiya girişi — çalışan, tarih, saat, iş kalemi.',
+  'var.empty':'Henüz vardiya eklenmedi',
+  'g.taks':'TAKS','g.kaks':'KAKS/Emsal','g.kk':'Kat Karşılığı','g.imar':'İmar Planı',
+  'g.ruhsat':'Ruhsat','g.deprem':'Deprem','g.arsa':'Arsa Değerleme','g.arsapayi':'Arsa Payı',
+  'g.tapu':'Tapu Okuma','g.maliyet':'Maliyet 2026','g.sozlesme':'Sözleşme','g.kdont':'Kent. Dön.',
+  'sum.empty':'Proje bilgilerini girerek özeti görüntüleyin',
+  'tl.note':'Simülatör Pro\'dan süre alınır',
+  'n.proje':'Proje','n.yapi':'Yapı','n.opt':'Opt.','n.kesit':'Kesit',
+  'n.harita':'Harita','n.analiz':'Analiz','n.sim':'Sim','n.rehber':'Rehber',
+  'n.vardiya':'Vardiya','n.cikti':'Çıktı'
+};
+const EN={
+  'mode.h':'Quick','mode.p':'Pro',
+  'ct.proje':'Project & Parcel Info','ct.hesap':'Basic Results',
+  'ct.yapi':'Building Type','ct.oran':'Commercial / Residential Ratio','ct.kk':'Floor Exchange',
+  'ct.opt':'Unit Mix Optimizer','ct.optres':'Optimal Distribution',
+  'ct.kesit':'Building Section View','ct.katlist':'Floor List',
+  'ct.swot':'SWOT Analysis','ct.roi':'ROI Analysis','ct.doviz':'Live Exchange Rates',
+  'ct.simh':'Quick Simulation','ct.simp':'Pro Financial Analysis',
+  'ct.rehber':'Construction Guide',
+  'ct.var':'Shift & Staff Tracker','ct.varlist':'Shift List',
+  'ct.cikti':'Share & Export','ct.ozet':'Project Summary','ct.timeline':'Project Timeline',
+  'lbl.proje':'Project Name','lbl.il':'Province','lbl.ilce':'District','lbl.mah':'Neighborhood',
+  'lbl.ada':'Block No','lbl.parsel':'Parcel No','lbl.alan':'Parcel Area (m²)',
+  'lbl.kaks':'FAR / Emsal','lbl.katy':'Floor Height (m)',
+  'lbl.toran':'Commercial Ratio (%)','lbl.arsapct':'Land Owner Share (%)','lbl.mutpct':'Contractor Share',
+  'lbl.avgm2':'Avg Unit m²','lbl.sfiyat':'Sale Price ₺/m²','lbl.imaliyet':'Build Cost ₺/m²','lbl.ortak':'Common Area (%)',
+  'lbl.hedef':'Goal','lbl.mapq':'Search Address',
+  'lbl.arsadeg':'Land Value (₺)','lbl.digerg':'Other Costs (₺)',
+  'lbl.sure':'Build Duration (mo)','lbl.ssure':'Sales Duration (mo)',
+  'lbl.faiz':'Interest Rate (%/yr)','lbl.enf':'Inflation (%/yr)',
+  'lbl.ruhsat':'Permits & Fees (₺)','lbl.paz':'Marketing (%)',
+  'lbl.vcalisan':'Worker Name','lbl.vgore':'Role','lbl.vtarih':'Date',
+  'lbl.vgir':'Start Time','lbl.vcik':'End Time','lbl.vucret':'Daily Wage (₺)','lbl.vnot':'Note',
+  'ph.proje':'E.g. Mixed-Use Project','ph.mah':'Neighborhood','ph.map':'Province, District...',
+  'ph.vcalisan':'John Smith','ph.vnot':'Work item, note...',
+  'sl.ins':'Total m²','sl.kat':'Floors','sl.tab':'Footprint m²','sl.net':'Net Sellable m²',
+  'sl.yuk':'Building Height m','sl.dai':'~Units','sl.arsad':'Owner Units','sl.mutd':'Contractor Units',
+  'sl.karm':'Profit Margin','sl.topgl':'Total Revenue','sl.mutnet':'Net Profit','sl.arsav':'Land Value',
+  'sl.topmal':'Total Cost','sl.mutgel':'Cont. Revenue','sl.enlem':'Latitude','sl.boylam':'Longitude',
+  'sl.bgelir':'Gross Revenue','sl.netkar':'Net Profit','sl.margin':'Margin',
+  'sw.s':'💪 STRENGTHS','sw.w':'⚠️ WEAKNESSES','sw.o':'🚀 OPPORTUNITIES','sw.t':'🎯 THREATS',
+  'sec.hizli':'QUICK ESTIMATE','sec.pro':'DETAILED ANALYSIS',
+  'sec.zaman':'TIME & FINANCING','sec.makro':'MACROECONOMIC','sec.sabit':'FIXED COSTS',
+  'sim.note':'Adjust sliders for instant results — no project data needed.',
+  'sim.note2':'Includes inflation, interest & marketing costs.',
+  'btn.kaydet':'💾 Save & Update','btn.hesapla':'🧮 Calculate','btn.opt':'⚡ Optimize',
+  'btn.roi':'📈 Calculate ROI','btn.pro':'⚡ Pro Calculate','btn.guncelle':'🔄 Refresh',
+  'btn.yazdir':'Print','btn.paylas':'Share','btn.uzman':'Ask Expert',
+  'btn.excel':'Excel/CSV','btn.kopyala':'Copy','btn.inst':'Add to Home',
+  'btn.varekle':'➕ Add Shift','btn.vcsvexp':'📊 Export Excel','btn.vtemizle':'🗑️ Clear',
+  'cur.loading':'⏳ Loading...','cur.upd':'Last updated:',
+  'og.val':'Max Value','og.unit':'Max Units','og.bal':'Balanced',
+  't.konut':'Residential','t.ticari':'Commercial','t.karma':'Mixed','t.gticar':'GF Commercial',
+  't.ofis':'Office','t.sanayi':'Industrial','t.otopark':'Parking',
+  'vg.ustas':'Master','vg.kalfa':'Journeyman','vg.isci':'Worker','vg.mihendis':'Engineer','vg.operatör':'Operator',
+  'var.note':'Manual shift entry — worker, date, time, task.',
+  'var.empty':'No shifts added yet',
+  'g.taks':'TAKS','g.kaks':'FAR/Emsal','g.kk':'Floor Exchange','g.imar':'Zoning Plan',
+  'g.ruhsat':'Permits','g.deprem':'Seismic Code','g.arsa':'Land Valuation','g.arsapayi':'Land Share',
+  'g.tapu':'Title Deed','g.maliyet':'2026 Costs','g.sozlesme':'Contracts','g.kdont':'Urban Renewal',
+  'sum.empty':'Enter project data to view summary',
+  'tl.note':'Duration taken from Pro Simulator',
+  'n.proje':'Project','n.yapi':'Build','n.opt':'Opt.','n.kesit':'Section',
+  'n.harita':'Map','n.analiz':'Analysis','n.sim':'Sim','n.rehber':'Guide',
+  'n.vardiya':'Shifts','n.cikti':'Output'
+};
+
+function t(k){return (S.lang==='en'?EN:TR)[k]||TR[k]||k;}
+
+function applyLang(){
+  document.documentElement.setAttribute('lang',S.lang);
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    const k=el.getAttribute('data-k');
+    if(el.tagName==='OPTION')el.textContent=t(k);
+    else el.textContent=t(k);
+  });
+  document.querySelectorAll('[data-ph]').forEach(el=>el.placeholder=t(el.getAttribute('data-ph')));
+  buildNav();
+}
+
+// ════════════════════════════════════════
+//  MODE & NAV
+// ════════════════════════════════════════
+const HIZLI_TABS=[
+  {i:'📋',k:'n.proje',tab:0},
+  {i:'🏘️',k:'n.yapi',tab:1},
+  {i:'🎯',k:'n.opt',tab:2},
+  {i:'🏗️',k:'n.kesit',tab:3},
+  {i:'🎮',k:'n.sim',tab:6},
+  {i:'📚',k:'n.rehber',tab:7},
+  {i:'📤',k:'n.cikti',tab:9},
+];
+const PRO_TABS=[
+  {i:'📋',k:'n.proje',tab:0},
+  {i:'🏘️',k:'n.yapi',tab:1},
+  {i:'🎯',k:'n.opt',tab:2},
+  {i:'🏗️',k:'n.kesit',tab:3},
+  {i:'🗺️',k:'n.harita',tab:4},
+  {i:'📊',k:'n.analiz',tab:5},
+  {i:'🎮',k:'n.sim',tab:6},
+  {i:'📚',k:'n.rehber',tab:7},
+  {i:'📋',k:'n.vardiya',tab:8},
+  {i:'📤',k:'n.cikti',tab:9},
+];
+
+function buildNav(){
+  const tabs=S.mode==='pro'?PRO_TABS:HIZLI_TABS;
+  const bnav=document.getElementById('bnav');
+  bnav.innerHTML=tabs.map(({i,k,tab})=>`
+    <div class="ni${S.cur===tab?' on':''}" onclick="goTab(${tab})" id="ni-${tab}">
+      <div class="ic">${i}</div>
+      <div class="lb">${t(k)}</div>
+    </div>`).join('');
+}
+
+function goTab(n){
+  document.getElementById('tab-'+S.cur)?.classList.remove('on');
+  S.cur=n;
+  document.getElementById('tab-'+n)?.classList.add('on');
+  buildNav();
+  window.scrollTo(0,0);
+  if(n===3)drawSection();
+  if(n===4)initMap();
+  if(n===5){genSWOT();calcROI();}
+  if(n===9){renderSummary();renderTimeline();}
+}
+
+function setMode(m){
+  S.mode=m;
+  document.documentElement.setAttribute('data-mode',m);
+  document.getElementById('msb-h').classList.toggle('on',m==='hizli');
+  document.getElementById('msb-p').classList.toggle('on',m==='pro');
+  // Accent color
+  if(m==='pro'){
+    document.getElementById('msb-p').style.background='var(--mor)';
+    document.getElementById('msb-p').style.color='#fff';
+    document.getElementById('msb-h').style.background='';document.getElementById('msb-h').style.color='';
+  } else {
+    document.getElementById('msb-h').style.background='var(--ya)';
+    document.getElementById('msb-h').style.color='#000';
+    document.getElementById('msb-p').style.background='';document.getElementById('msb-p').style.color='';
+  }
+  // If current tab not in new mode, go to 0
+  const tabs=m==='pro'?PRO_TABS:HIZLI_TABS;
+  if(!tabs.find(x=>x.tab===S.cur)){goTab(0);}else buildNav();
+  toast(m==='pro'?'🔬 Pro Mod aktif':'⚡ Hızlı Mod aktif');
+}
+
+// ════════════════════════════════════════
+//  THEME / LANG / FULLSCREEN
+// ════════════════════════════════════════
+function toggleTheme(){
+  S.theme=S.theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',S.theme);
+  document.getElementById('tbtn').textContent=S.theme==='dark'?'🌙':'☀️';
+  if(S.cur===3)drawSection();
+}
+function toggleLang(){
+  S.lang=S.lang==='tr'?'en':'tr';
+  document.getElementById('lbtn').textContent=S.lang.toUpperCase();
+  applyLang();
+  toast(S.lang==='en'?'🇬🇧 English':'🇹🇷 Türkçe');
+}
+function toggleFS(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+    document.getElementById('fsbtn').textContent='⛶';
+  } else {
+    document.exitFullscreen();
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  document.getElementById('fsbtn').textContent=document.fullscreenElement?'✕':'⛶';
+});
+
+// ════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════
+function fN(n){return Math.round(n).toLocaleString('tr-TR');}
+function fM(n){
+  if(!isFinite(n))return '—';
+  const abs=Math.abs(n);
+  const s=n<0?'-':'';
+  if(abs>=1e9)return s+(abs/1e9).toFixed(2)+' Mlr ₺';
+  if(abs>=1e6)return s+(abs/1e6).toFixed(2)+' Mn ₺';
+  if(abs>=1e3)return s+(abs/1e3).toFixed(0)+'K ₺';
+  return s+abs.toFixed(0)+' ₺';
+}
+function toast(m,dur=2400){
+  const el=document.getElementById('toast');
+  el.textContent=m;el.classList.add('on');
+  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+// ════════════════════════════════════════
+//  İL / İLÇE
+// ════════════════════════════════════════
+const ILD={
+  "Adana":["Aladağ","Ceyhan","Çukurova","Karaisalı","Kozan","Sarıçam","Seyhan","Yüreğir"],
+  "Ankara":["Altındağ","Çankaya","Etimesgut","Gölbaşı","Keçiören","Mamak","Pursaklar","Sincan","Yenimahalle"],
+  "Antalya":["Alanya","Aksu","Döşemealtı","Kemer","Kepez","Konyaaltı","Manavgat","Muratpaşa","Serik"],
+  "Bursa":["Gemlik","Gürsu","İnegöl","Kestel","Mudanya","Nilüfer","Osmangazi","Yenişehir","Yıldırım"],
+  "Eskişehir":["Odunpazarı","Tepebaşı","Çifteler","İnönü","Sivrihisar"],
+  "Gaziantep":["Araban","Nizip","Oğuzeli","Şahinbey","Şehitkamil"],
+  "İstanbul":["Adalar","Arnavutköy","Ataşehir","Avcılar","Bağcılar","Bahçelievler","Bakırköy","Başakşehir","Bayrampaşa","Beşiktaş","Beykoz","Beylikdüzü","Beyoğlu","Büyükçekmece","Çekmeköy","Esenler","Esenyurt","Eyüpsultan","Fatih","Güngören","Kadıköy","Kağıthane","Kartal","Küçükçekmece","Maltepe","Pendik","Sancaktepe","Sarıyer","Şişli","Tuzla","Ümraniye","Üsküdar","Zeytinburnu"],
+  "İzmir":["Aliağa","Balçova","Bayraklı","Bergama","Bornova","Buca","Çeşme","Çiğli","Gaziemir","Karabağlar","Karşıyaka","Kemalpaşa","Konak","Menemen","Narlıdere","Torbalı","Urla"],
+  "Kayseri":["Develi","Kocasinan","Melikgazi","Talas"],
+  "Kocaeli":["Başiskele","Çayırova","Darıca","Gebze","Gölcük","İzmit","Kartepe","Körfez"],
+  "Konya":["Karatay","Meram","Selçuklu","Ereğli","Akşehir","Beyşehir"],
+  "Manisa":["Akhisar","Alaşehir","Soma","Turgutlu","Yunusemre"],
+  "Mersin":["Akdeniz","Erdemli","Mezitli","Silifke","Tarsus","Toroslar","Yenişehir"],
+  "Muğla":["Bodrum","Dalaman","Datça","Fethiye","Marmaris","Menteşe","Milas","Ortaca"],
+  "Sakarya":["Adapazarı","Akyazı","Hendek","Karasu","Sapanca","Serdivan"],
+  "Samsun":["Atakum","Canik","İlkadım","Bafra","Tekkeköy"],
+  "Trabzon":["Akçaabat","Of","Ortahisar","Sürmene","Yomra"],
+  "Balıkesir":["Altıeylül","Bandırma","Burhaniye","Edremit","Karesi"],
+  "Diyarbakır":["Bağlar","Bismil","Kayapınar","Sur","Yenişehir"],
+  "Hatay":["Antakya","Dörtyol","İskenderun","Kırıkhan","Reyhanlı"],
+  "Malatya":["Battalgazi","Darende","Doğanşehir","Yeşilyurt"],
+  "Şanlıurfa":["Eyyübiye","Harran","Karaköprü","Siverek"],
+  "Van":["Edremit","Erciş","İpekyolu","Tuşba"],
+};
+function loadIlData(){
+  const s=document.getElementById('il-sel');
+  s.innerHTML='<option value="">—</option>';
+  Object.keys(ILD).sort().forEach(il=>s.innerHTML+=`<option value="${il}">${il}</option>`);
+}
+function loadIlce(){
+  const il=document.getElementById('il-sel').value;
+  const s=document.getElementById('ilce-sel');
+  s.innerHTML='<option value="">—</option>';
+  if(ILD[il])ILD[il].forEach(i=>s.innerHTML+=`<option value="${i}">${i}</option>`);
+  const q=document.getElementById('map-q');
+  if(q)q.value=[il,s.value].filter(Boolean).join(', ');
+}
+
+// ════════════════════════════════════════
+//  CALC
+// ════════════════════════════════════════
+function calc(){
+  S.parsel=parseFloat(document.getElementById('parsel-alan').value)||0;
+  S.taks=parseFloat(document.getElementById('taks').value)||.4;
+  S.kaks=parseFloat(document.getElementById('kaks').value)||2;
+  const kY=parseFloat(document.getElementById('kat-y').value)||3;
+  S.toplamInsaat=S.parsel*S.kaks;
+  S.tabanAlan=S.parsel*S.taks;
+  S.katSayisi=Math.max(1,Math.round(S.kaks/S.taks));
+  S.netAlan=S.toplamInsaat*0.75;
+  S.daireSayisi=Math.max(0,Math.round(S.netAlan/90));
+  if(S.parsel>0){
+    document.getElementById('res-card').style.display='';
+    document.getElementById('r-ins').textContent=fN(S.toplamInsaat);
+    document.getElementById('r-kat').textContent=S.katSayisi;
+    document.getElementById('r-tab').textContent=fN(S.tabanAlan);
+    document.getElementById('r-net').textContent=fN(S.netAlan);
+    document.getElementById('r-yuk').textContent=(S.katSayisi*kY).toFixed(1);
+    document.getElementById('r-dai').textContent=S.daireSayisi;
+    calcKK();runOpt();
+  }
+}
+function updProj(){
+  const v=document.getElementById('proje-adi').value;
+  document.getElementById('h-proj').textContent=v||'—';
+}
+function saveData(){calc();toast('💾 '+(S.lang==='en'?'Saved!':'Kaydedildi!'));}
+
+// ════════════════════════════════════════
+//  YAPI TİPİ
+// ════════════════════════════════════════
+function selT(tp,el){
+  S.bType=tp;
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('oran-card').style.display=['karma','gticar'].includes(tp)?'':'none';
+  if(S.cur===3)drawSection();
+}
+
+// ════════════════════════════════════════
+//  KAT KARŞILIĞI
+// ════════════════════════════════════════
+function updArsa(v){
+  S.arsaPct=+v;
+  document.getElementById('apctv').textContent='%'+v;
+  document.getElementById('mutpct').textContent='%'+(100-v);
+  calcKK();
+}
+function calcKK(){
+  const sf=parseFloat(document.getElementById('sfiyat').value)||50000;
+  const mc=parseFloat(document.getElementById('imaliyet').value)||15000;
+  const op=parseFloat(document.getElementById('ortak').value)||25;
+  const am=parseFloat(document.getElementById('avg-m2').value)||90;
+  S.sfiyat=sf;S.imaliyet=mc;
+  if(S.toplamInsaat<=0)return;
+  const net=S.toplamInsaat*(1-op/100);
+  const topGelir=net*sf;
+  const topMal=S.toplamInsaat*mc;
+  const aP=S.arsaPct/100;
+  const arsaV=topGelir*aP;
+  const mutGelir=topGelir*(1-aP);
+  const mutNet=mutGelir-topMal;
+  const kar=topMal>0?((mutNet/(topMal+arsaV))*100):0;
+  const topD=Math.round(net/am);
+  const arsaD=Math.round(topD*aP);
+  document.getElementById('kk-res').style.display='';
+  document.getElementById('kk-ad').textContent=arsaD+' ad.';
+  document.getElementById('kk-md').textContent=(topD-arsaD)+' ad.';
+  document.getElementById('kk-kar').textContent='%'+kar.toFixed(1);
+  document.getElementById('kk-gl').textContent=fM(topGelir);
+  document.getElementById('kk-net').textContent=fM(mutNet);
+  document.getElementById('kk-av').textContent=fM(arsaV);
+}
+
+// ════════════════════════════════════════
+//  OPTİMİZER
+// ════════════════════════════════════════
+const APTS=[
+  {id:'Stüdyo',area:45,vm:1.22,en:false,max:20},
+  {id:'1+1',area:60,vm:1.15,en:true,max:30},
+  {id:'2+1',area:90,vm:1.0,en:true,max:40},
+  {id:'3+1',area:120,vm:0.88,en:true,max:25},
+  {id:'4+1',area:160,vm:0.75,en:false,max:10},
+];
+function renderAptCfg(){
+  document.getElementById('apt-cfg').innerHTML=APTS.map((a,i)=>`
+    <div class="ar">
+      <input type="checkbox" ${a.en?'checked':''} onchange="APTS[${i}].en=this.checked;runOpt()">
+      <span class="abg">${a.id}</span>
+      <div class="ai"><div class="at">${a.area}m² · ×${a.vm}</div>
+      <div class="ad">Max: <input type="number" value="${a.max}" style="width:44px;display:inline;padding:2px 4px;font-size:11px" oninput="APTS[${i}].max=+this.value;runOpt()"> ad.</div></div>
+    </div>`).join('');
+}
+function runOpt(){
+  const op=parseFloat(document.getElementById('opt-ortak').value)||25;
+  const net=S.toplamInsaat*(1-op/100);
+  if(net<=0)return;
+  const goal=document.getElementById('opt-goal').value;
+  const sf=S.sfiyat||50000;
+  const en=APTS.filter(a=>a.en);
+  let rem=net;const res={};en.forEach(a=>res[a.id]=0);
+  const sm={value:(a,b)=>b.vm/b.area-a.vm/a.area,units:(a,b)=>a.area-b.area,balanced:(a,b)=>a.area-b.area};
+  if(goal==='balanced'){
+    const perT=Math.floor(net/(en.reduce((s,a)=>s+a.area,0)||1));
+    en.forEach(a=>{const c=Math.min(perT,a.max,Math.floor(rem/a.area));res[a.id]=c;rem-=c*a.area;});
+    const fill=en.find(a=>a.id==='2+1')||en[0];
+    if(fill){const ex=Math.min(Math.floor(rem/fill.area),fill.max-res[fill.id]);res[fill.id]+=ex;}
+  } else {
+    [...en].sort(sm[goal]).forEach(apt=>{const c=Math.min(Math.floor(rem/apt.area),apt.max);res[apt.id]=c;rem-=c*apt.area;});
+  }
+  let tU=0,tA=0,tV=0;
+  en.forEach(a=>{tU+=res[a.id];tA+=res[a.id]*a.area;tV+=res[a.id]*a.area*sf*a.vm;});
+  document.getElementById('opt-res').style.display='';
+  document.getElementById('opt-list').innerHTML=en.map(a=>`
+    <div class="ar">
+      <span class="abg">${a.id}</span>
+      <div class="ai"><div class="at">${a.area}m² · ${fM(a.area*sf*a.vm)}</div>
+      <div class="ad">${fM(res[a.id]*a.area*sf*a.vm)} toplam</div></div>
+      <div class="ac">${res[a.id]}</div>
+    </div>`).join('');
+  document.getElementById('opt-sum').innerHTML=`
+    <div class="sc"><div class="sv">${tU}</div><div class="sl">${S.lang==='en'?'Total Units':'Toplam Daire'}</div></div>
+    <div class="sc"><div class="sv bl">${fN(tA)}</div><div class="sl">m²</div></div>
+    <div class="sc"><div class="sv gr" style="font-size:11px">${fM(tV)}</div><div class="sl">${S.lang==='en'?'Est. Value':'Tahmini Değer'}</div></div>`;
+}
+
+// ════════════════════════════════════════
+//  3D KESİT
+// ════════════════════════════════════════
+function rot(d){S.rotY=Math.max(-75,Math.min(75,(S.rotY||0)+d));drawSection();}
+function drawSection(){
+  const canvas=document.getElementById('sec-canvas');
+  if(!canvas||!canvas.parentElement)return;
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-28;
+  const H=Math.min(W*.65,360);
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  ctx.scale(dpr,dpr);
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  ctx.fillStyle=dark?'#111827':'#f4f6fb';ctx.fillRect(0,0,W,H);
+  const floors=S.katSayisi||5;
+  const ry=S.rotY||0;const rf=Math.abs(ry)/75;
+  const sw=W*.18*rf;const bws=1-rf*.32;
+  const BW=W*.55*bws,BX=(W-BW)/2+(ry>0?-sw/2:sw/2),GY=H-22;
+  const FH=Math.min((GY-12)/(floors+1.5),38);
+  const BH=floors*FH,BY=GY-BH;
+  document.getElementById('rlbl').textContent=ry+'°';
+  // ground
+  ctx.fillStyle=dark?'#374151':'#9ca3af';ctx.fillRect(0,GY,W,3);
+  // shadow
+  ctx.fillStyle='rgba(0,0,0,.15)';ctx.fillRect(BX+4,BY+4,BW,BH);
+  // basement
+  ctx.fillStyle='#374151';ctx.fillRect(BX-5,GY+2,BW+10,FH*.82);
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font=`bold ${Math.min(FH*.28,9)}px DM Sans,sans-serif`;
+  ctx.textAlign='center';ctx.fillText('⬇ Otopark',BX+BW/2,GY+FH*.52);
+  // floors
+  for(let i=0;i<floors;i++){
+    const fn=floors-i,y=BY+i*FH,pe=i*.3;
+    let col='#3b82f6';
+    if(S.bType==='ticari')col='#f59e0b';
+    else if(S.bType==='ofis')col='#8b5cf6';
+    else if(S.bType==='sanayi')col='#6b7280';
+    else if(S.bType==='gticar')col=fn===1?'#f59e0b':'#3b82f6';
+    else if(S.bType==='karma'){col=fn<=Math.ceil(floors*S.toran/100)?'#f59e0b':'#3b82f6';}
+    ctx.fillStyle='rgba(0,0,0,.12)';ctx.fillRect(BX-pe+2,y+2,BW+pe,FH-2);
+    ctx.fillStyle=col;ctx.fillRect(BX-pe,y,BW+pe,FH-2);
+    ctx.fillStyle='rgba(255,255,255,.09)';ctx.fillRect(BX-pe,y,BW+pe,FH*.26);
+    const wC=Math.max(2,Math.floor(BW/26));
+    for(let w=0;w<wC;w++){ctx.fillStyle='rgba(255,255,255,.18)';const wx=BX-pe+7+w*(BW/wC);ctx.fillRect(wx,y+FH*.18,BW/wC-4,FH*.5);}
+    ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(BX-pe,y+FH-2,BW+pe,2);
+    ctx.fillStyle='rgba(255,255,255,.9)';ctx.font=`700 ${Math.min(FH*.28,9)}px DM Sans,sans-serif`;
+    ctx.textAlign='left';ctx.fillText(`${fn}. Kat`,BX-pe+4,y+FH*.64);
+    ctx.textAlign='right';
+    const lbl=S.bType==='ticari'?'🏢':S.bType==='ofis'?'💼':S.bType==='sanayi'?'🏭':S.bType==='karma'&&fn<=Math.ceil(floors*S.toran/100)?'🏢':fn===1?'🚪':'🏠';
+    ctx.fillText(lbl,BX+BW-3,y+FH*.64);
+  }
+  // side wall
+  if(Math.abs(ry)>4){
+    const dir=ry>0?1:-1;
+    for(let i=0;i<floors;i++){
+      const y=BY+i*FH;
+      ctx.fillStyle=ry>0?'rgba(59,130,246,.28)':'rgba(245,158,11,.22)';
+      ctx.beginPath();ctx.moveTo(BX+BW,y);ctx.lineTo(BX+BW+sw*dir,y-3*rf);
+      ctx.lineTo(BX+BW+sw*dir,y+FH-2-3*rf);ctx.lineTo(BX+BW,y+FH-2);
+      ctx.closePath();ctx.fill();
+    }
+  }
+  // roof
+  ctx.fillStyle=dark?'#4b5563':'#6b7280';
+  ctx.beginPath();ctx.moveTo(BX-8,BY);ctx.lineTo(BX+BW/2,BY-14);ctx.lineTo(BX+BW+8,BY);ctx.closePath();ctx.fill();
+  // labels
+  ctx.fillStyle=dark?'#6b7280':'#9ca3af';ctx.font='10px DM Sans,sans-serif';ctx.textAlign='right';
+  const kY=parseFloat(document.getElementById('kat-y').value)||3;
+  ctx.fillText(`↕${(floors*kY).toFixed(1)}m`,BX-10,BY+BH/2);
+  ctx.textAlign='center';ctx.fillText(`← ${fN(S.tabanAlan||0)} m² →`,BX+BW/2,GY+13);
+  // floor list
+  let html='';
+  for(let i=floors;i>=1;i--){
+    const col=S.bType==='ticari'?'#f59e0b':S.bType==='ofis'?'#8b5cf6':S.bType==='karma'&&i<=Math.ceil(floors*S.toran/100)?'#f59e0b':S.bType==='gticar'&&i===1?'#f59e0b':'#3b82f6';
+    const lbl=S.bType==='ticari'?'🏢 Ticari':S.bType==='ofis'?'💼 Ofis':S.bType==='sanayi'?'🏭 Sanayi':S.bType==='karma'&&i<=Math.ceil(floors*S.toran/100)?'🏢 Ticari':S.bType==='gticar'&&i===1?'🏪 Ticari Giriş':i===1?'🚪 Giriş / Lobi':'🏠 Konut';
+    html+=`<div style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--br);font-size:11px"><span style="width:10px;height:10px;background:${col};border-radius:2px;flex-shrink:0"></span><span style="min-width:44px;font-weight:700;font-family:var(--fd);color:var(--tx2)">${i}. Kat</span><span style="flex:1;color:var(--tx)">${lbl}</span><span style="color:var(--ya);font-family:var(--fd);font-weight:700">${fN(S.tabanAlan||0)} m²</span></div>`;
+  }
+  html+=`<div style="display:flex;align-items:center;gap:7px;padding:5px 0;font-size:11px"><span style="width:10px;height:10px;background:#374151;border-radius:2px;flex-shrink:0"></span><span style="min-width:44px;font-weight:700;font-family:var(--fd);color:var(--tx2)">B Kat</span><span style="flex:1;color:var(--tx)">🚗 Otopark</span><span style="color:var(--tx3);font-family:var(--fd)">${fN((S.tabanAlan||0)*.85)} m²</span></div>`;
+  document.getElementById('floor-list').innerHTML=html;
+}
+
+// ════════════════════════════════════════
+//  MAP
+// ════════════════════════════════════════
+function initMap(){
+  if(S.mapObj){S.mapObj.invalidateSize();return;}
+  S.mapObj=L.map('map').setView([39.9,32.8],6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(S.mapObj);
+  S.mapObj.on('click',e=>pin(e.latlng.lat,e.latlng.lng));
+  S.mapObj.on('moveend',()=>document.getElementById('m-zoom').textContent=S.mapObj.getZoom());
+}
+function pin(la,ln){
+  if(S.marker)S.mapObj.removeLayer(S.marker);
+  S.marker=L.marker([la,ln]).addTo(S.mapObj).bindPopup(`📍 ${la.toFixed(5)}, ${ln.toFixed(5)}`).openPopup();
+  document.getElementById('m-lat').textContent=la.toFixed(4);
+  document.getElementById('m-lng').textContent=ln.toFixed(4);
+}
+function searchMap(){
+  const q=document.getElementById('map-q').value;if(!q)return;
+  if(!S.mapObj){goTab(4);setTimeout(()=>doSearch(q),700);}else doSearch(q);
+}
+function doSearch(q){
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q+', Türkiye')}`)
+    .then(r=>r.json()).then(d=>{if(d&&d[0]){S.mapObj.setView([+d[0].lat,+d[0].lon],15);pin(+d[0].lat,+d[0].lon);}else toast('❌ Konum bulunamadı');}).catch(()=>toast('❌ Hata'));
+}
+
+// ════════════════════════════════════════
+//  SWOT
+// ════════════════════════════════════════
+function genSWOT(){
+  const margin=S.sfiyat>0?(S.sfiyat-S.imaliyet)/S.sfiyat*100:0;
+  const s=[],w=[],o=[],th=[];
+  if(S.parsel>=500)s.push(S.lang==='en'?'Large parcel – scale economy':'Geniş parsel – ölçek ekonomisi');
+  if(S.kaks>=2.5)s.push(S.lang==='en'?'High FAR – area efficiency':'Yüksek emsal – alan verimliliği');
+  if(margin>50)s.push(S.lang==='en'?'High gross margin':'Yüksek brüt kâr marjı');
+  if(['karma','gticar'].includes(S.bType))s.push(S.lang==='en'?'Mixed use – revenue diversification':'Karma kullanım – gelir çeşitliliği');
+  if(s.length===0)s.push(S.lang==='en'?'Enter project data to analyze':'Proje verisi girildikçe güncellenir');
+  if(S.parsel<300)w.push(S.lang==='en'?'Small parcel – scale limited':'Küçük parsel – ölçek kısıtlı');
+  if(S.kaks<1.5)w.push(S.lang==='en'?'Low FAR – limited area':'Düşük emsal – alan yetersizliği');
+  if(S.imaliyet>22000)w.push(S.lang==='en'?'High construction cost':'Yüksek inşaat maliyeti');
+  if(w.length===0)w.push(S.lang==='en'?'No major weaknesses found':'Belirgin zayıflık tespit edilmedi');
+  o.push(S.lang==='en'?'Urban renewal incentives':'Kentsel dönüşüm teşvikleri');
+  o.push(S.lang==='en'?'Mortgage demand momentum':'Konut kredisi talebi');
+  if(S.kaks<3)o.push(S.lang==='en'?'FAR increase via rezoning':'İmar revizyonu ile emsal artırımı');
+  th.push(S.lang==='en'?'Inflation – cost risk':'Enflasyon – maliyet artışı');
+  th.push(S.lang==='en'?'Interest rate changes':'Faiz dalgalanması');
+  if(S.katSayisi>10)th.push(S.lang==='en'?'High-rise seismic requirements':'Yüksek bina deprem yükü');
+  const ri=arr=>arr.map(i=>`<div class="swi">• ${i}</div>`).join('');
+  ['s','w','o','t'].forEach((k,i)=>document.getElementById('sw-'+k).innerHTML=ri([s,w,o,th][i]));
+}
+
+// ════════════════════════════════════════
+//  ROI
+// ════════════════════════════════════════
+function calcROI(){
+  const arsa=parseFloat(document.getElementById('arsa-deg').value)||0;
+  const diger=parseFloat(document.getElementById('diger-g').value)||0;
+  const insMal=S.toplamInsaat*S.imaliyet;
+  const topMal=arsa+insMal+diger;
+  const mutGelir=S.toplamInsaat*.75*S.sfiyat*(1-S.arsaPct/100);
+  if(topMal<=0)return;
+  const roi=((mutGelir-topMal)/topMal)*100;
+  document.getElementById('roi-res').style.display='';
+  document.getElementById('roi-mal').textContent=fM(topMal);
+  document.getElementById('roi-gel').textContent=fM(mutGelir);
+  const el=document.getElementById('roi-pct');
+  el.textContent=roi.toFixed(1)+'%';
+  el.className='sv'+(roi>30?' gr':roi>10?'':' rd');
+  const pct=Math.min(Math.max(roi,0),100);
+  const bar=document.getElementById('roi-bar');
+  bar.style.width=pct+'%';bar.style.background=roi>30?'var(--ye)':roi>10?'var(--ya)':'var(--ki)';
+  document.getElementById('roi-note').textContent=roi>30?'✅ '+(S.lang==='en'?'Strong return':'Güçlü getiri'):roi>10?'⚠️ '+(S.lang==='en'?'Moderate return':'Orta getiri'):'❌ '+(S.lang==='en'?'Low return':'Düşük getiri');
+}
+
+// ════════════════════════════════════════
+//  CURRENCY
+// ════════════════════════════════════════
+async function fetchCur(){
+  const w=document.getElementById('cur-w');
+  if(w)w.innerHTML=`<div style="text-align:center;color:var(--tx3);font-size:11px;padding:14px">${t('cur.loading')}</div>`;
+  try{
+    const r=await fetch('https://open.er-api.com/v6/latest/USD',{cache:'no-cache'});
+    const d=await r.json();
+    if(!d?.rates)throw 0;
+    const ra=d.rates,tl=ra.TRY||1,eu=ra.EUR||.92,gb=ra.GBP||.79,ch=ra.CHF||.88;
+    const items=[
+      {f:'🇺🇸',p:'USD / TRY',v:(tl).toFixed(2)},
+      {f:'🇪🇺',p:'EUR / TRY',v:(tl/eu).toFixed(2)},
+      {f:'🇬🇧',p:'GBP / TRY',v:(tl/gb).toFixed(2)},
+      {f:'🇨🇭',p:'CHF / TRY',v:(tl/ch).toFixed(2)},
+      {f:'🇪🇺',p:'EUR / USD',v:(1/eu).toFixed(4)},
+      {f:'💴',p:'USD / TRY (Altın ₺)',v:fM((tl/eu)*3500)},
+    ];
+    if(w)w.innerHTML=items.map(i=>`<div class="crow"><span class="cflag">${i.f}</span><div class="cinfo"><div class="cpair">${i.p}</div></div><div class="cval">${i.v}</div></div>`).join('');
+    const te=document.getElementById('cur-time');
+    if(te)te.textContent=t('cur.upd')+' '+new Date().toLocaleTimeString('tr-TR');
+  }catch{
+    if(w)w.innerHTML='<div style="text-align:center;color:var(--ki);font-size:11px;padding:12px">❌ '+(S.lang==='en'?'Could not load rates':'Veri alınamadı')+'</div>';
+  }
+}
+
+// ════════════════════════════════════════
+//  SIMULATOR
+// ════════════════════════════════════════
+function simUpd(){
+  const p=+document.getElementById('s-par').value;
+  const k=parseFloat(document.getElementById('s-kak').value);
+  const f=+document.getElementById('s-fiy').value;
+  const m=+document.getElementById('s-mal').value;
+  document.getElementById('s-pv').textContent=p;
+  document.getElementById('s-kv').textContent=k.toFixed(1);
+  document.getElementById('s-fv').textContent=f>=1000?(f/1000).toFixed(0)+'K':f;
+  document.getElementById('s-mv').textContent=m>=1000?(m/1000).toFixed(0)+'K':m;
+  const alan=p*k,net=alan*.75,daire=Math.round(net/90);
+  const gelir=net*f,maliyet=alan*m,kar=gelir-maliyet;
+  const margin=gelir>0?(kar/gelir*100):0;
+  document.getElementById('s-alan').textContent=fN(alan);
+  document.getElementById('s-dai').textContent=daire;
+  document.getElementById('s-gel').textContent=fM(gelir);
+  document.getElementById('s-kar').textContent=fM(kar);
+  const me=document.getElementById('s-mrg');
+  me.textContent=margin.toFixed(0)+'%';
+  me.className='sv'+(margin>40?' gr':margin>20?'':' rd');
+}
+function calcPro(){
+  const sure=+document.getElementById('p-sure').value||24;
+  const ssure=+document.getElementById('p-satis').value||12;
+  const faiz=+document.getElementById('p-faiz').value||35;
+  const enf=+document.getElementById('p-enf').value||40;
+  const ruhsat=+document.getElementById('p-ruhsat').value||250000;
+  const paz=+document.getElementById('p-paz').value||3;
+  if(S.toplamInsaat<=0){toast('⚠️ '+(S.lang==='en'?'Enter project data first!':'Önce proje bilgilerini girin!'));return;}
+  S.proSure=sure;
+  const baseMal=S.toplamInsaat*S.imaliyet;
+  const enfF=Math.pow(1+enf/100,sure/12);
+  const gercekMal=baseMal*enfF;
+  const faizMal=gercekMal*(faiz/100)*(sure/12);
+  const pazMal=S.toplamInsaat*.75*S.sfiyat*(paz/100);
+  const topGider=gercekMal+faizMal+pazMal+ruhsat;
+  const sfEnd=S.sfiyat*Math.pow(1+enf/100,(sure+ssure)/12);
+  const topGelir=S.toplamInsaat*.75*sfEnd*(1-S.arsaPct/100);
+  const netKar=topGelir-topGider;const roi=(netKar/topGider)*100;
+  document.getElementById('pro-res').style.display='';
+  document.getElementById('pro-cont').innerHTML=`
+    <div class="sr">
+      <div class="sc"><div class="sv rd" style="font-size:11px">${fM(topGider)}</div><div class="sl">${S.lang==='en'?'Total Costs':'Toplam Gider'}</div></div>
+      <div class="sc"><div class="sv gr" style="font-size:11px">${fM(topGelir)}</div><div class="sl">${S.lang==='en'?'Total Revenue':'Toplam Gelir'}</div></div>
+      <div class="sc"><div class="sv ${netKar>0?'gr':'rd'}">${roi.toFixed(1)}%</div><div class="sl">Net ROI</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--tx2);line-height:1.9;margin-top:6px">
+      📅 ${S.lang==='en'?'Total duration':'Toplam süre'}: <b>${sure+ssure} ${S.lang==='en'?'mo':'ay'}</b><br>
+      💹 ${S.lang==='en'?'Inflation factor':'Enflasyon faktörü'}: <b>×${enfF.toFixed(2)}</b><br>
+      📊 ${S.lang==='en'?'Adjusted sale price':'Güncel satış fiyatı'}: <b>${fM(sfEnd)}/m²</b><br>
+      💰 ${S.lang==='en'?'Net profit':'Net kâr'}: <b style="color:${netKar>0?'var(--ye)':'var(--ki)'}">${fM(netKar)}</b>
+    </div>`;
+  if(S.cur===9)renderTimeline();
+}
+
+// ════════════════════════════════════════
+//  VARDİYA TRACKER
+// ════════════════════════════════════════
+function addVardiya(){
+  const isim=document.getElementById('v-isim').value.trim();
+  const gorev=document.getElementById('v-gorev').value;
+  const tarih=document.getElementById('v-tarih').value;
+  const giris=document.getElementById('v-giris').value;
+  const cikis=document.getElementById('v-cikis').value;
+  const ucret=parseFloat(document.getElementById('v-ucret').value)||0;
+  const not=document.getElementById('v-not').value.trim();
+  if(!isim||!tarih){toast('⚠️ '+(S.lang==='en'?'Name and date required':'İsim ve tarih zorunlu'));return;}
+  const [gh,gm]=(giris||'08:00').split(':').map(Number);
+  const [ch,cm]=(cikis||'17:00').split(':').map(Number);
+  const saat=Math.max(0,((ch*60+cm)-(gh*60+gm))/60).toFixed(1);
+  S.vardiyas.push({id:Date.now(),isim,gorev,tarih,giris,cikis,saat:+saat,ucret,not});
+  localStorage.setItem('vardiyas',JSON.stringify(S.vardiyas));
+  document.getElementById('v-isim').value='';document.getElementById('v-not').value='';
+  renderVardiya();toast('✅ '+(S.lang==='en'?'Shift added':'Vardiya eklendi'));
+}
+function delVardiya(id){
+  S.vardiyas=S.vardiyas.filter(v=>v.id!==id);
+  localStorage.setItem('vardiyas',JSON.stringify(S.vardiyas));renderVardiya();
+}
+function clearVardiya(){
+  if(!confirm(S.lang==='en'?'Clear all shifts?':'Tüm vardiyalar silinsin mi?'))return;
+  S.vardiyas=[];localStorage.removeItem('vardiyas');renderVardiya();
+}
+const VCOLS={'Usta':'#f59e0b','Kalfa':'#3b82f6','İşçi':'#10b981','Mühendis':'#8b5cf6','Operatör':'#ef4444','Master':'#f59e0b','Journeyman':'#3b82f6','Worker':'#10b981','Engineer':'#8b5cf6','Operator':'#ef4444'};
+function renderVardiya(){
+  const el=document.getElementById('var-list');
+  if(S.vardiyas.length===0){
+    el.innerHTML=`<div style="text-align:center;color:var(--tx3);font-size:11px;padding:16px">${t('var.empty')}</div>`;
+    document.getElementById('var-ozet').textContent='';
+    return;
+  }
+  const sorted=[...S.vardiyas].sort((a,b)=>b.tarih.localeCompare(a.tarih));
+  el.innerHTML=sorted.map(v=>`
+    <div class="vrow">
+      <div class="vdot" style="background:${VCOLS[v.gorev]||'#6b7280'}"></div>
+      <div class="vinfo">
+        <div class="vtitle">${v.isim} <span style="font-size:9px;background:var(--s3);padding:1px 5px;border-radius:4px;margin-left:4px">${v.gorev}</span></div>
+        <div class="vsub">📅 ${v.tarih} · ⏰ ${v.giris}–${v.cikis}${v.not?' · '+v.not:''}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="vsaat">${v.saat}s</div>
+        <div style="font-size:9px;color:var(--tx3)">${fM(v.ucret)}</div>
+      </div>
+      <button class="vdel" onclick="delVardiya(${v.id})">✕</button>
+    </div>`).join('');
+  const topSaat=S.vardiyas.reduce((a,v)=>a+v.saat,0);
+  const topUcret=S.vardiyas.reduce((a,v)=>a+v.ucret,0);
+  document.getElementById('var-ozet').textContent=`${S.vardiyas.length} vardiya · ${topSaat.toFixed(1)}s · ${fM(topUcret)}`;
+}
+function exportVardiya(){
+  if(!S.vardiyas.length){toast('⚠️ '+(S.lang==='en'?'No shifts to export':'Vardiya yok'));return;}
+  if(typeof XLSX!=='undefined'){
+    const rows=[['Çalışan','Görev','Tarih','Giriş','Çıkış','Saat','Ücret (₺)','Not'],
+      ...S.vardiyas.map(v=>[v.isim,v.gorev,v.tarih,v.giris,v.cikis,v.saat,v.ucret,v.not||''])];
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:18},{wch:12},{wch:12},{wch:8},{wch:8},{wch:7},{wch:12},{wch:22}];
+    XLSX.utils.book_append_sheet(wb,ws,'Vardiyalar');
+    XLSX.writeFile(wb,'vardiyalar.xlsx');toast('📊 Excel indirildi!');
+  } else toast('❌ XLSX yüklenemedi');
+}
+
+// ════════════════════════════════════════
+//  GUIDE
+// ════════════════════════════════════════
+const GUIDES={
+  taks:{t:'📏 TAKS (Taban Alan Katsayısı)',c:`TAKS, binanın taban alanının parsel alanına oranıdır.
+
+Formül: Taban Alan = Parsel m² × TAKS
+
+Örnek: 500m² × 0.40 = 200m² taban alanı
+
+Tipik değerler:
+• Konut bölgesi:  0.20 – 0.40
+• Ticari bölge:   0.40 – 0.60
+• Sanayi bölgesi: 0.50 – 0.70`},
+  kaks:{t:'📐 KAKS / Emsal',c:`Toplam inşaat alanının parsel alanına oranı.
+
+Formül: Toplam İnşaat = Parsel × KAKS
+Yaklaşık kat sayısı: KAKS ÷ TAKS
+
+Yoğunluk:
+• Düşük:  0.5 – 1.0
+• Orta:   1.0 – 2.5
+• Yüksek: 2.5 – 4.0+`},
+  kk:{t:'🤝 Kat Karşılığı',c:`Arsa sahibi parseli verir, karşılığında daire alır.
+
+Tipik paylaşım:
+• Arsa sahibi: %35 – %45
+• Müteahhit:   %55 – %65
+
+Oran; konum, emsal, piyasa ve
+inşaat maliyetine göre değişir.`},
+  imar:{t:'📋 İmar Planı',c:`İmar planı arazinin kullanımını belirleyen belgedir.
+
+• Nazım Plan (1/5000): Genel arazi kararları
+• Uygulama Planı (1/1000): Yapılaşma koşulları
+
+Kavramlar:
+• Yapı yaklaşma mesafesi (setback)
+• H kotu: Maksimum yapı yüksekliği
+• İmar adası: Yollarla çevrili blok`},
+  ruhsat:{t:'🏛️ Yapı Ruhsatı Süreci',c:`1. İmar durumu belgesi
+2. Zemin etüt raporu
+3. Mimari + statik + M/E projeler
+4. Belediyeye başvuru + harç
+5. Proje incelemesi ve onayı
+6. Yapı ruhsatı düzenlenmesi
+
+Belgeler: Tapu, projeler (4 takım),
+zemin etüdü, yapı denetim sözleşmesi`},
+  deprem:{t:'🌍 Deprem Yönetmeliği (TBDY 2018)',c:`Bina önem sınıfları:
+• BKS-1: Kritik tesisler (I=1.5)
+• BKS-2: Önemli binalar (I=1.2)
+• BKS-3: Normal binalar (I=1.0)
+
+Deprem düzeyleri:
+• DD-2: 475 yıl dönüş (tasarım esası)
+• Yüksek bina (>70m): Performans tasarımı
+
+Zemin sınıfları: ZA – ZF arası 6 sınıf`},
+  arsa:{t:'🗺️ Arsa Değerleme',c:`Değeri etkileyen faktörler:
+
+Konum: Merkeze yakınlık, ulaşım, altyapı
+İmar: KAKS, kullanım kararı, yoğunluk
+
+Yöntemler:
+• Emsal karşılaştırma
+• Geliştirme değeri
+• Gelir kapitalizasyonu
+
+Formül:
+Arsa Değeri ≈ Emsal × m² × Konum katsayısı`},
+  arsapayi:{t:'🤲 Arsa Payı Nasıl Hesaplanır?',c:`Kat mülkiyetinde her bağımsız bölüme
+düşen arsa payı tapu tescilinde belirlenir.
+
+Pratik Formül:
+Payınız % = Daireniz m² / Net Toplam m² × 100
+
+Tapuda gösterimi:
+50/1000 = Parselin %5'i sizin
+
+Kentsel Dönüşüm Eşikleri:
+• Payınız < 1/3  → azınlıkta kalırsınız
+• Payınız ≥ 2/3 → çoğunluk kararı alırsınız`},
+  tapu:{t:'📜 Tapu Senedi Nasıl Okunur?',html:true,c:`<div style='font-size:11px;line-height:1.6'>
+<div style='background:linear-gradient(135deg,#b8912a,#e8c84a);border-radius:8px;padding:10px;text-align:center;margin-bottom:10px'>
+<div style='font-size:8.5px;font-weight:700;color:#1a0800'>T.C. TAPU VE KADASTRO GENEL MÜDÜRLÜĞÜ</div>
+<div style='font-size:14px;font-weight:800;color:#1a0800;margin-top:4px'>📜 TAPU SENEDİ</div>
+</div>
+${[['#e8c84a','🏘️ İL/İLÇE/MAHALLE','Taşınmazın tam adresi. İmar sorgulamalarında temel referans.'],
+  ['#3b82f6','🔢 ADA / PARSEL NO','Kadastro konum kodu. TKGM e-Devlet sorgusu için zorunlu.'],
+  ['#10b981','📐 YÜZÖLÇÜMİ','Parselin toplam alanı. TAKS ve KAKS bu değer üzerinden hesaplanır.'],
+  ['#f59e0b','🏷️ NİTELİĞİ','ARSA (yapılabilir), TARLA, BAĞ vb. Ruhsat için "arsa" niteliğinde olmalı.'],
+  ['#8b5cf6','⚖️ HİSSE / ARSA PAYI','Ör: 50/1000 = %5. Kentsel dönüşümde güç oranınız.'],
+  ['#ef4444','📋 EDİNME SEBEBİ','Satış/Bağış/Miras/Kat Karşılığı. Vergi ve uyuşmazlıklarda delil.'],
+].map(([c,h,p])=>`<div style='background:var(--s2);border-radius:6px;padding:7px 9px;border-left:3px solid ${c};margin-bottom:6px'><div style='color:${c};font-weight:800;font-size:9.5px;margin-bottom:2px'>${h}</div><div style='color:var(--tx2)'>${p}</div></div>`).join('')}
+<div style='background:var(--yadim);border-radius:6px;padding:8px;border:1px solid rgba(245,158,11,.3)'>
+<b style='color:var(--ya)'>💡 İpucu:</b> <span style='color:var(--tx2)'>Tapuyu almadan önce TKGM e-Devlet "Tapu Sorgulama" ile doğrulayın. Beyan/şerh sütununda ipotek ve haciz görünür.</span>
+</div></div>`},
+  maliyet:{t:'🧱 İnşaat Maliyet Tablosu (2026 Q1)',c:`Sınıf bazlı toplam yapım maliyeti:
+
+A Sınıfı (Lüks+):     40.000 – 75.000+ ₺/m²
+B Sınıfı (Orta-Üst):  24.000 – 40.000  ₺/m²
+C Sınıfı (Standart):   16.000 – 24.000  ₺/m²
+D Sınıfı (Ekonomik):   10.000 – 16.000  ₺/m²
+
+Kaba yapı sistemleri:
+• Betonarme:             7.000 – 12.000
+• Çelik:                12.000 – 18.000
+• Prefabrik:             5.500 –  9.000
+
+Şehir ortalamaları (Q1 2026):
+• İstanbul:  ₺20.000 – 26.000/m²
+• Ankara:    ₺18.000 – 23.000/m²
+• İzmir:     ₺19.000 – 24.000/m²`},
+  sozlesme:{t:'📝 Sözleşme Türleri',c:`1. Kat Karşılığı İnşaat Sözleşmesi
+   Arsa + inşaat karşılığı daire paylaşımı
+
+2. Anahtar Teslim
+   Sabit fiyat, risk müteahhitte
+
+3. Birim Fiyat
+   İş miktarına göre ödeme
+
+4. Maliyet + Kâr
+   Maliyet + sabit/değişken kâr marjı
+
+Kritik maddeler:
+• Süre ve gecikme cezası
+• Malzeme kalite standartları
+• Hakediş / ödeme planı`},
+  kdont:{t:'🏚️ Kentsel Dönüşüm (6306)',c:`Süreç:
+1. Riskli yapı tespiti (lisanslı kurum)
+2. Tapu şerhi tescili
+3. Malikler 60 gün müzakere
+4. 2/3 çoğunluk → yıkım/yapım kararı
+5. Azınlık → zorla satış
+
+Kira Yardımı (2026 Q1):
+• Büyükşehir: 10.000 ₺/ay (18 ay)
+• Diğer:       7.500 ₺/ay (18 ay)
+
+Avantajlar:
+• KDV: %1 (normal %20)
+• Tapu harcı: muaf
+• Faiz sübvansiyonu`}
+};
+function guide(k){
+  const g=GUIDES[k];if(!g)return;
+  document.getElementById('guide-box').style.display='';
+  document.getElementById('guide-title').textContent=g.t;
+  const gt=document.getElementById('guide-text');
+  if(g.html){gt.style.whiteSpace='normal';gt.innerHTML=g.c;}
+  else{gt.style.whiteSpace='pre-line';gt.textContent=g.c;}
+  setTimeout(()=>document.getElementById('guide-box').scrollIntoView({behavior:'smooth'}),100);
+}
+
+// ════════════════════════════════════════
+//  SUMMARY + TIMELINE
+// ════════════════════════════════════════
+function genShareTxt(){
+  const pn=document.getElementById('proje-adi').value||'Proje';
+  const il=document.getElementById('il-sel').value;
+  const ilce=document.getElementById('ilce-sel').value;
+  return `🏗️ ${pn}\n📍 ${[il,ilce].filter(Boolean).join(' / ')}\n📐 ${fN(S.parsel)}m² · KAKS ${S.kaks}\n🏢 ${S.katSayisi} kat · ${fN(S.toplamInsaat)}m²\n🏠 ${S.daireSayisi} daire · ${S.bType}\n💰 ${fM(S.toplamInsaat*.75*S.sfiyat)}\n\nİnşaat Pro`;
+}
+function renderSummary(){
+  const el=document.getElementById('sum-cont');
+  if(S.parsel===0){el.innerHTML=`<div style="padding:14px;text-align:center;color:var(--tx3);font-size:11px">${t('sum.empty')}</div>`;return;}
+  const rows=[
+    [t('lbl.proje'),document.getElementById('proje-adi').value||'—'],
+    ['İl / İlçe',[document.getElementById('il-sel').value,document.getElementById('ilce-sel').value].filter(Boolean).join(' / ')||'—'],
+    ['Ada / Parsel',[document.getElementById('ada').value,document.getElementById('parsel').value].filter(Boolean).join(' / ')||'—'],
+    [t('lbl.alan'),fN(S.parsel)+' m²'],
+    ['TAKS / KAKS',`${S.taks} / ${S.kaks}`],
+    [t('sl.kat'),S.katSayisi+' kat'],
+    [t('sl.ins'),fN(S.toplamInsaat)+' m²'],
+    [t('sl.net'),fN(S.netAlan)+' m²'],
+    [S.lang==='en'?'Building Type':'Yapı Tipi',S.bType],
+    [S.lang==='en'?'Land / Contractor':'Arsa / Müt. Payı',`%${S.arsaPct} / %${100-S.arsaPct}`],
+    [t('lbl.sfiyat'),fM(S.sfiyat)+'/m²'],
+    [S.lang==='en'?'Est. Revenue':'Tahmini Gelir',fM(S.toplamInsaat*.75*S.sfiyat)],
+  ];
+  el.innerHTML=rows.map(([k,v])=>`<div class="smr"><span class="smk">${k}</span><span class="smv">${v}</span></div>`).join('');
+}
+function renderTimeline(){
+  const sure=S.proSure||24;
+  const phases=[
+    {l:'📋 Proje/Tasarım',p:8,c:'#8b5cf6'},
+    {l:'🏛️ Ruhsat/İzin',p:12,c:'#f59e0b'},
+    {l:'⛏️ Kazı & Temel',p:10,c:'#ef4444'},
+    {l:'🏗️ Kaba İnşaat',p:35,c:'#3b82f6'},
+    {l:'🔌 Tesisat & İç',p:22,c:'#10b981'},
+    {l:'🎨 Boya & Son',p:8,c:'#06b6d4'},
+    {l:'🔑 Satış/Teslim',p:5,c:'#22c55e'},
+  ];
+  let html=`<div style="font-size:10px;color:var(--tx3);margin-bottom:8px">${S.lang==='en'?'Total duration':'Toplam süre'}: <b style="color:var(--ya)">${sure} ${S.lang==='en'?'months':'ay'}</b></div>`;
+  let cum=0;
+  phases.forEach(p=>{
+    const dur=Math.max(1,Math.round(sure*p.p/100));
+    html+=`<div class="tlp"><div class="tll">${p.l}</div><div class="tlbw"><div class="tlb" style="width:${p.p}%;background:${p.c};margin-left:${cum}%">${dur}ay</div></div><div class="tld">${cum+1}-${cum+dur}</div></div>`;
+    cum+=p.p;
+  });
+  document.getElementById('tl-cont').innerHTML=html;
+}
+
+// ════════════════════════════════════════
+//  OUTPUT
+// ════════════════════════════════════════
+function shareApp(){
+  if(navigator.share)navigator.share({title:'İnşaat Pro',text:genShareTxt(),url:location.href}).catch(()=>{});
+  else copyTxt();
+}
+function copyTxt(){
+  navigator.clipboard.writeText(genShareTxt()).then(()=>toast('📋 '+(S.lang==='en'?'Copied!':'Kopyalandı!'))).catch(()=>toast('❌'));
+}
+function openWA(){window.open('https://wa.me/?text='+encodeURIComponent('Merhaba, inşaat projemi değerlendirmenizi istiyorum:\n\n'+genShareTxt()),'_blank');}
+function exportExcel(){
+  const il=document.getElementById('il-sel').value,ilce=document.getElementById('ilce-sel').value;
+  const rows=[
+    ['İnşaat Pro — Proje Raporu','','',''],[''],
+    ['PROJE BİLGİLERİ','','',''],
+    ['Proje Adı',document.getElementById('proje-adi').value||'','',''],
+    ['İl',il,'İlçe',ilce],
+    ['Ada',document.getElementById('ada').value||'','Parsel',document.getElementById('parsel').value||''],
+    [''],
+    ['HESAPLAR','','',''],
+    ['Parsel (m²)',S.parsel,'TAKS',S.taks],
+    ['KAKS',S.kaks,'Kat Sayısı',S.katSayisi],
+    ['Toplam İnşaat m²',S.toplamInsaat,'Net m²',S.netAlan],
+    [''],
+    ['FİNANSAL','','',''],
+    ['Yapı Tipi',S.bType,'Arsa Payı %',S.arsaPct],
+    ['Satış ₺/m²',S.sfiyat,'İnşaat ₺/m²',S.imaliyet],
+    ['Tahmini Gelir',S.toplamInsaat*.75*S.sfiyat,'',''],
+  ];
+  if(S.vardiyas.length){
+    rows.push([''],['VARDİYALAR','','',''],
+      ['Çalışan','Görev','Tarih','Giriş','Çıkış','Saat','Ücret'],
+      ...S.vardiyas.map(v=>[v.isim,v.gorev,v.tarih,v.giris,v.cikis,v.saat,v.ucret]));
+  }
+  if(typeof XLSX!=='undefined'){
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:26},{wch:20},{wch:20},{wch:16}];
+    XLSX.utils.book_append_sheet(wb,ws,'Proje');
+    XLSX.writeFile(wb,'insaat_pro_rapor.xlsx');
+    toast('📊 Excel indirildi!');
+  } else {
+    const csv=rows.map(r=>r.map(c=>`"${c??''}"`).join(',')).join('\n');
+    const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv'})),download:'rapor.csv'});
+    a.click();toast('📊 CSV indirildi!');
+  }
+}
+function doInstall(){
+  if(S.installEvt){
+    S.installEvt.prompt();
+    S.installEvt.userChoice.then(r=>{if(r.outcome==='accepted')toast('✅ '+(S.lang==='en'?'Installed!':'Kuruldu!'));});
+  } else {
+    toast(S.lang==='en'?'Chrome: Menu → Add to Home Screen':'Chrome: Menü → Ana ekrana ekle');
+  }
+}
+
+// ════════════════════════════════════════
+//  PWA
+// ════════════════════════════════════════
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();S.installEvt=e;});
+
+// ════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  loadIlData();
+  renderAptCfg();
+  simUpd();
+  renderVardiya();
+  // Set today's date in vardiya
+  document.getElementById('v-tarih').valueAsDate=new Date();
+  // Mode buttons initial style
+  setMode('hizli');
+  // Build nav
+  buildNav();
+  // Lang apply
+  applyLang();
+  // Fetch currency in background (pro)
+  fetchCur();
+});
+window.addEventListener('resize',()=>{if(S.cur===3)drawSection();});
+</script>
+</body>
+</html>
