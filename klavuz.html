@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0a0e1a">
+<title>İnşaat Pro — Kullanım Kılavuzu</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e1a;--s1:#111827;--s2:#1c2333;--s3:#252f42;
+  --tx:#e8edf5;--tx2:#8892a4;--tx3:#5a6478;
+  --ya:#f59e0b;--yadim:rgba(245,158,11,.14);
+  --ma:#3b82f6;--madim:rgba(59,130,246,.12);
+  --ye:#10b981;--yedim:rgba(16,185,129,.11);
+  --ki:#ef4444;--kidim:rgba(239,68,68,.11);
+  --mor:#8b5cf6;--mordim:rgba(139,92,246,.12);
+  --br:rgba(255,255,255,.07);--br2:rgba(255,255,255,.13)
+}
+[data-theme=light]{
+  --bg:#eff1f8;--s1:#fff;--s2:#f4f6fb;--s3:#eaedf6;
+  --tx:#0d1117;--tx2:#4b5566;--tx3:#9ca3b8;
+  --ya:#d97706;--yadim:rgba(217,119,6,.1);
+  --ma:#2563eb;--madim:rgba(37,99,235,.08);
+  --ye:#059669;--yedim:rgba(5,150,105,.08);
+  --ki:#dc2626;--kidim:rgba(220,38,38,.08);
+  --br:rgba(0,0,0,.07);--br2:rgba(0,0,0,.13)
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:40px}
+
+/* ── HEADER ── */
+.hdr{background:var(--s1);border-bottom:2px solid var(--ya);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ya);letter-spacing:-.3px}
+.hdr-sub{font-size:11px;color:var(--tx2);margin-top:1px}
+.hdr-btns{display:flex;gap:7px}
+.hbtn{padding:7px 13px;border-radius:8px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;transition:.18s}
+.hbtn:active{transform:scale(.94)}
+.hbtn-p{background:var(--ya);color:#0d0a00}
+.hbtn-o{background:var(--s2);border:1px solid var(--br2);color:var(--tx)}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{height:3px;background:var(--br2);position:sticky;top:60px;z-index:99}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--ya),var(--ma));width:0%;transition:width .2s}
+
+/* ── NAV SIDEBAR ── */
+.layout{display:flex;max-width:1100px;margin:0 auto;gap:0}
+.sidebar{width:220px;flex-shrink:0;padding:20px 0 20px 16px;position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--br2);border-radius:2px}
+.s-title{font-size:10px;font-weight:800;color:var(--tx3);letter-spacing:1px;font-family:'Syne',sans-serif;margin-bottom:8px;margin-top:16px}
+.s-title:first-child{margin-top:0}
+.s-link{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:.15s;font-size:12px;font-weight:500;color:var(--tx2);text-decoration:none;border-left:2px solid transparent}
+.s-link:hover{background:var(--s2);color:var(--tx)}
+.s-link.active{background:var(--yadim);color:var(--ya);border-left-color:var(--ya);font-weight:700}
+.s-link .ic{font-size:14px;flex-shrink:0}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:24px 20px;min-width:0}
+
+/* ── SECTION ── */
+.section{margin-bottom:40px;scroll-margin-top:80px}
+.sec-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--br2)}
+.sec-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.sec-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--tx);letter-spacing:-.3px}
+.sec-sub{font-size:11px;color:var(--tx3);margin-top:2px}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border-radius:12px;border:1px solid var(--br);margin-bottom:12px;overflow:hidden}
+.card-head{padding:13px 15px;display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;transition:.15s}
+.card-head:hover{background:var(--s2)}
+.card-head-icon{font-size:18px;flex-shrink:0}
+.card-head-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--tx);flex:1}
+.card-head-badge{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;background:var(--yadim);color:var(--ya)}
+.card-chevron{font-size:11px;color:var(--tx3);transition:.25s;flex-shrink:0}
+.card-head.open .card-chevron{transform:rotate(90deg)}
+.card-body{display:none;padding:0 15px 15px;border-top:1px solid var(--br)}
+.card-body.show{display:block}
+
+/* ── CONTENT BLOCKS ── */
+.desc{font-size:12.5px;color:var(--tx2);line-height:1.75;margin-top:12px}
+.formula{background:var(--s2);border-radius:9px;padding:11px 14px;margin:12px 0;border-left:3px solid var(--ya)}
+.formula-label{font-size:9.5px;font-weight:800;color:var(--ya);font-family:'Syne',sans-serif;letter-spacing:.5px;margin-bottom:5px}
+.formula-code{font-family:'Courier New',monospace;font-size:13px;color:var(--tx);font-weight:600}
+.formula-example{font-size:11px;color:var(--tx3);margin-top:4px}
+.tip{background:var(--yedim);border:1px solid rgba(16,185,129,.2);border-radius:9px;padding:10px 13px;margin:10px 0;display:flex;gap:8px}
+.tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.tip-text{font-size:12px;color:var(--tx2);line-height:1.65}
+.warn{background:var(--kidim);border:1px solid rgba(239,68,68,.2);border-radius:9px;padding:10px 13px;margin:10px 0;display:flex;gap:8px}
+.warn-text{font-size:12px;color:var(--tx2);line-height:1.65}
+.table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12px}
+.table th{background:var(--s3);color:var(--tx2);padding:8px 11px;text-align:left;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--br2)}
+.table td{padding:8px 11px;border-bottom:1px solid var(--br);color:var(--tx2);vertical-align:top}
+.table tr:last-child td{border-bottom:none}
+.table td:first-child{font-weight:600;color:var(--tx);width:130px}
+.badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;margin-left:5px;vertical-align:middle}
+.b-ya{background:var(--yadim);color:var(--ya)}
+.b-ma{background:var(--madim);color:var(--ma)}
+.b-ye{background:var(--yedim);color:var(--ye)}
+.b-ki{background:var(--kidim);color:var(--ki)}
+.b-mo{background:var(--mordim);color:var(--mor)}
+.steps{list-style:none;margin:12px 0}
+.steps li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--br);font-size:12px;color:var(--tx2);line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--ya);color:#000;font-size:10px;font-weight:800;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.info-card{background:var(--s2);border-radius:9px;padding:12px;border:1px solid var(--br)}
+.info-card-title{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tx);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.info-card-text{font-size:11px;color:var(--tx2);line-height:1.6}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--s1) 0%,var(--s2) 100%);border:1px solid var(--br2);border-radius:14px;padding:28px 24px;margin-bottom:30px;text-align:center}
+.hero-icon{font-size:48px;margin-bottom:12px}
+.hero-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--ya);margin-bottom:6px}
+.hero-desc{font-size:13px;color:var(--tx2);line-height:1.7;max-width:480px;margin:0 auto}
+.hero-tags{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px}
+.htag{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:700;font-family:'Syne',sans-serif}
+
+/* ── FEATURE GRID ── */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:14px 0}
+.feat{background:var(--s2);border-radius:10px;padding:12px;border:1px solid var(--br);text-align:center}
+.feat-icon{font-size:24px;margin-bottom:7px}
+.feat-title{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;color:var(--tx);margin-bottom:3px}
+.feat-desc{font-size:10px;color:var(--tx3);line-height:1.5}
+
+/* ── SHORTCUT TABLE ── */
+.sc-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--br);font-size:12px}
+.sc-row:last-child{border-bottom:none}
+.sc-key{background:var(--s3);border:1px solid var(--br2);border-radius:5px;padding:3px 8px;font-family:'Courier New',monospace;font-size:11px;font-weight:700;color:var(--ya);white-space:nowrap;flex-shrink:0}
+.sc-desc{color:var(--tx2);flex:1}
+
+/* ── MOBILE ── */
+@media(max-width:680px){
+  .sidebar{display:none}
+  .content{padding:16px 14px}
+  .grid2{grid-template-columns:1fr}
+  .hero{padding:20px 14px}
+  .hdr-sub{display:none}
+}
+@media(max-width:400px){
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .hbtn-o span{display:none}
+}
+
+/* ── PRINT ── */
+@media print{
+  .sidebar,.progress-bar,.hdr-btns{display:none}
+  .card-body{display:block!important}
+  body{background:#fff;color:#000}
+}
+
+/* ── SCROLL ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--br2);border-radius:2px}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div>
+      <div class="hdr-logo">🏗️ İnşaat Pro</div>
+      <div class="hdr-sub">Kullanım Kılavuzu & Referans</div>
+    </div>
+  </div>
+  <div class="hdr-btns">
+    <button class="hbtn hbtn-o" onclick="toggleTheme()">🌙 <span>Tema</span></button>
+    <button class="hbtn hbtn-o" onclick="window.print()">🖨️ <span>Yazdır</span></button>
+    <a href="index.html" style="text-decoration:none"><button class="hbtn hbtn-p">← Uygulamaya Dön</button></a>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="s-title">BAŞLANGIÇ</div>
+  <a class="s-link active" href="#giris" onclick="setActive(this)"><span class="ic">🚀</span> Genel Bakış</a>
+  <a class="s-link" href="#modlar" onclick="setActive(this)"><span class="ic">⚡</span> Hızlı / Pro Mod</a>
+  <a class="s-link" href="#ekranlar" onclick="setActive(this)"><span class="ic">📱</span> Ekranlar</a>
+
+  <div class="s-title">SEKMELER</div>
+  <a class="s-link" href="#proje" onclick="setActive(this)"><span class="ic">📋</span> Proje & Parsel</a>
+  <a class="s-link" href="#yapi" onclick="setActive(this)"><span class="ic">🏘️</span> Yapı & Kat Karşılığı</a>
+  <a class="s-link" href="#optimizer" onclick="setActive(this)"><span class="ic">🎯</span> Optimizer</a>
+  <a class="s-link" href="#kesit" onclick="setActive(this)"><span class="ic">🏗️</span> 3D Kesit</a>
+  <a class="s-link" href="#harita" onclick="setActive(this)"><span class="ic">🗺️</span> Harita</a>
+  <a class="s-link" href="#analiz" onclick="setActive(this)"><span class="ic">📊</span> Analiz</a>
+  <a class="s-link" href="#simulator" onclick="setActive(this)"><span class="ic">🎮</span> Simülatör</a>
+  <a class="s-link" href="#cikti" onclick="setActive(this)"><span class="ic">📤</span> Çıktı</a>
+
+  <div class="s-title">TERİMLER</div>
+  <a class="s-link" href="#terimler-imar" onclick="setActive(this)"><span class="ic">📐</span> İmar Terimleri</a>
+  <a class="s-link" href="#terimler-kk" onclick="setActive(this)"><span class="ic">🤝</span> Kat Karşılığı</a>
+  <a class="s-link" href="#terimler-maliyet" onclick="setActive(this)"><span class="ic">💰</span> Maliyet Rehberi</a>
+  <a class="s-link" href="#terimler-tapu" onclick="setActive(this)"><span class="ic">📜</span> Tapu Rehberi</a>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- HERO -->
+<div class="hero" id="giris">
+  <div class="hero-icon">🏗️</div>
+  <div class="hero-title">İnşaat Pro Kullanım Kılavuzu</div>
+  <div class="hero-desc">Gayrimenkul ve inşaat proje analizi için tasarlanmış mobil-öncelikli web uygulaması. Parsel verisi girerek TAKS/KAKS hesabı, daire dağılımı, 3D kesit, harita, SWOT analizi ve finansal modelleme yapabilirsiniz.</div>
+  <div class="hero-tags">
+    <span class="htag b-ya">📱 PWA — Ana Ekrana Kurulabilir</span>
+    <span class="htag b-ma">🌐 TR / EN Çift Dil</span>
+    <span class="htag b-ye">🌙 Koyu / Açık Tema</span>
+    <span class="htag b-mo">⚡ Hızlı + 🔬 Pro Mod</span>
+  </div>
+</div>
+
+<!-- ═══ MODLAR ═══ -->
+<div class="section" id="modlar">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">⚡</div>
+    <div>
+      <div class="sec-title">Hızlı / Pro Mod</div>
+      <div class="sec-sub">Header'daki geçiş butonu ile değiştirin</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="info-card">
+      <div class="info-card-title"><span style="background:var(--ya);color:#000;border-radius:4px;padding:1px 6px;font-size:9px">⚡ HIZLI MOD</span></div>
+      <div class="info-card-text">
+        Temel hesaplamalar için tasarlanmış. 7 sekme:<br><br>
+        📋 Proje · 🏘️ Yapı · 🎯 Optimizer · 🏗️ Kesit · 🎮 Simülatör · 📚 Rehber · 📤 Çıktı<br><br>
+        Harita, SWOT, ROI ve Pro simülasyon görünmez.
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title"><span style="background:var(--mor);color:#fff;border-radius:4px;padding:1px 6px;font-size:9px">🔬 PRO MOD</span></div>
+      <div class="info-card-text">
+        Tüm özellikler aktif. 9 sekme:<br><br>
+        + 🗺️ Harita · 📊 Analiz (SWOT + ROI + Döviz)<br>+ ⚡ Pro Simülasyon (enflasyon/faiz modeli)<br><br>
+        Proje zaman planı ve detaylı finansal analiz.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EKRANLAR ═══ -->
+<div class="section" id="ekranlar">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--madim)">📱</div>
+    <div>
+      <div class="sec-title">Ekran Kontrolleri</div>
+      <div class="sec-sub">Header butonları</div>
+    </div>
+  </div>
+  <div class="sc-row"><div class="sc-key">🌙 / ☀️</div><div class="sc-desc">Koyu / Açık tema geçişi</div></div>
+  <div class="sc-row"><div class="sc-key">TR / EN</div><div class="sc-desc">Türkçe / İngilizce dil geçişi — tüm arayüz anında güncellenir</div></div>
+  <div class="sc-row"><div class="sc-key">⛶</div><div class="sc-desc">Tam ekran modu (Fullscreen API)</div></div>
+  <div class="sc-row"><div class="sc-key">⚡ Hızlı</div><div class="sc-desc">Temel sekmelere geç</div></div>
+  <div class="sc-row"><div class="sc-key">🔬 Pro</div><div class="sc-desc">Gelişmiş sekmeleri aç</div></div>
+  <div class="sc-row"><div class="sc-key">+/−</div><div class="sc-desc">Sayısal alanlardaki ok butonları — değeri adım adım artırır/azaltır</div></div>
+  <div class="sc-row"><div class="sc-key">✏️ Düzenle</div><div class="sc-desc">Proje verilerini düzenleme moduna açar (kilitli görünüm varsayılan)</div></div>
+  <div class="sc-row"><div class="sc-key">💾 Kaydet</div><div class="sc-desc">Değişiklikleri uygular ve kilide alır, tüm hesaplamalar güncellenir</div></div>
+</div>
+
+<!-- ═══ PROJE ═══ -->
+<div class="section" id="proje">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">📋</div>
+    <div>
+      <div class="sec-title">Proje & Parsel Sekmesi</div>
+      <div class="sec-sub">Temel veri girişi</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🔒</div>
+      <div class="card-head-title">Veri Kilidi Nasıl Çalışır?</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="desc">Uygulama açıldığında veriler kilitlidir — kazara değişikliği önler. Düzenlemek için:</div>
+      <ol class="steps">
+        <li><div class="step-num">1</div><div>Header'daki turuncu "✏️ Düzenle" butonuna tıklayın — edit bar yeşile döner</div></li>
+        <li><div class="step-num">2</div><div>İl, ilçe, mahalle, ada/parsel, TAKS, KAKS ve diğer alanları doldurun</div></li>
+        <li><div class="step-num">3</div><div>"💾 Kaydet" butonuna tıklayın — hesaplamalar otomatik çalışır ve kilitlener</div></li>
+      </ol>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">Parsel alanı girildiği anda Temel Hesaplar kartı otomatik belirir. Kaydetmeden önce +/− okları ile değerleri ince ayarlayabilirsiniz.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">📐</div>
+      <div class="card-head-title">İmar Parametreleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead><tr><th>Alan</th><th>Açıklama</th><th>Tipik Değer</th></tr></thead>
+        <tbody>
+          <tr><td>Parsel Alanı</td><td>Tapu üzerindeki toplam arazi büyüklüğü (m²)</td><td>200 – 5.000 m²</td></tr>
+          <tr><td>TAKS</td><td>Taban Alan Katsayısı — binanın ayak izinin parsele oranı</td><td>0.20 – 0.60</td></tr>
+          <tr><td>KAKS / Emsal</td><td>Toplam inşaat alanının parsele oranı</td><td>0.5 – 4.0</td></tr>
+          <tr><td>Kat Yüksekliği</td><td>Bir katın yerden tavana yüksekliği</td><td>2.8 – 3.5 m</td></tr>
+          <tr><td>Bodrum Kat</td><td>Zemin altı kat adedi (otopark vs.)</td><td>0 – 4</td></tr>
+          <tr><td>Ortak Alan %</td><td>Merdiven, asansör, koridor gibi ortak alanların payı</td><td>20 – 35%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🏙️</div>
+      <div class="card-head-title">Yoğunluk & Ek Parametreler</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="desc">Otomatik hesaplanan bilgiler — veri girişi gerekmez:</div>
+      <table class="table">
+        <thead><tr><th>Gösterge</th><th>Nasıl Hesaplanır?</th></tr></thead>
+        <tbody>
+          <tr><td>Brüt Yoğunluk</td><td>Daire sayısı ÷ parsel alanı (hektar cinsinden). 100+ konut/ha = yüksek yoğunluk</td></tr>
+          <tr><td>Yeşil Alan %</td><td>100 − TAKS×100 − 10. Kentsel standartlarda min. %30 önerilir</td></tr>
+          <tr><td>Otopark Adedi</td><td>Daire sayısı × 1.2 (İstanbul Yönetmeliği'ne göre)</td></tr>
+          <tr><td>Asansör</td><td>Her 24 daireye 1 asansör (erişilebilirlik standardı)</td></tr>
+          <tr><td>~İnşaat Süresi</td><td>Toplam inşaat m² / 2000 × 3 ay (kaba tahmin)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ YAPI ═══ -->
+<div class="section" id="yapi">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">🏘️</div>
+    <div>
+      <div class="sec-title">Yapı Tipi & Kat Karşılığı</div>
+      <div class="sec-sub">6 yapı tipi, isteğe bağlı KK analizi</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🏘️</div>
+      <div class="card-head-title">Yapı Kullanım Tipleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <table class="table">
+        <thead><tr><th>Tip</th><th>Açıklama</th><th>Özellik</th></tr></thead>
+        <tbody>
+          <tr><td>🏠 Konut</td><td>Tamamen konut kullanımı</td><td>Mavi tonlar</td></tr>
+          <tr><td>🏢 Ticari</td><td>Tamamen ticari / alışveriş</td><td>Altın tonlar</td></tr>
+          <tr><td>🏬 Karma</td><td>Ticari + konut karışık</td><td>Oran slider aktif</td></tr>
+          <tr><td>🏪 Giriş Ticari</td><td>Zemin kat ticari, üstü konut</td><td>Zemin kat altın</td></tr>
+          <tr><td>💼 Ofis</td><td>Ofis kullanımı</td><td>Mor tonlar</td></tr>
+          <tr><td>🏭 Sanayi</td><td>Sanayi / depo kullanımı</td><td>Gri tonlar</td></tr>
+        </tbody>
+      </table>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">Karma ve Giriş Ticari seçildiğinde ticari oran slider'ı aktif olur. 3D kesitte katlar buna göre renklendirilir.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🤝</div>
+      <div class="card-head-title">Kat Karşılığı Toggle (Açık/Kapalı)</div>
+      <div class="card-head-badge">ÖNEMLİ</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="grid2">
+        <div class="info-card">
+          <div class="info-card-title">🟢 Toggle KAPALI</div>
+          <div class="info-card-text">
+            Kat karşılığı hesaplanmaz.<br><br>
+            <b>Bağımsız Daire Analizi</b> kartı açılır:<br>
+            → Toplam daire adedi<br>
+            → Net m² ve brüt gelir tahmini<br>
+            → Kâr marjı<br><br>
+            Müteahhit/arsa sahibi ayrımı yoktur.
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">🔵 Toggle AÇIK</div>
+          <div class="info-card-text">
+            Tam kat karşılığı hesabı aktif.<br><br>
+            <b>Arsa Sahibi</b> payı slider ile belirlenir.<br>
+            → Arsa dairesi / Müt. dairesi adedi<br>
+            → Toplam gelir ve müt. net kâr<br>
+            → Arsa değeri tahmini<br>
+            → Kâr marjı yüzdesi
+          </div>
+        </div>
+      </div>
+      <div class="formula">
+        <div class="formula-label">ÖRNEK HESAP</div>
+        <div class="formula-code">1.000 m² net alan × 50.000 ₺/m² = 50.000.000 ₺ gelir<br>Arsa Sahibi %40 → 20.000.000 ₺<br>Müt. %60 → 30.000.000 ₺<br>İnşaat Maliyeti: 15.000 × 1.333 m² = 20.000.000 ₺<br>Müt. Net Kâr: 10.000.000 ₺</div>
+        <div class="formula-example">Parsel 500m², KAKS 2.0, TAKS 0.40, Ortak Alan %25</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ OPTİMİZER ═══ -->
+<div class="section" id="optimizer">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yedim)">🎯</div>
+    <div>
+      <div class="sec-title">Daire Dağılımı Optimizer</div>
+      <div class="sec-sub">Otomatik en iyi karışımı bulur</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">⚙️</div>
+      <div class="card-head-title">Nasıl Çalışır?</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="desc">Net satılabilir alana göre daire tiplerini doldurur. Önce Proje sekmesine veri giriniz.</div>
+      <table class="table">
+        <thead><tr><th>Hedef</th><th>Mantık</th><th>Ne Zaman?</th></tr></thead>
+        <tbody>
+          <tr><td>💰 Max Değer</td><td>₺/m² değeri en yüksek daire tiplerine öncelik verir</td><td>Gelir maksimizasyonu</td></tr>
+          <tr><td>🏠 Max Adet</td><td>En küçük daireleri doldurur, adedi maksimize eder</td><td>Kira/satış adedi</td></tr>
+          <tr><td>⚖️ Dengeli</td><td>Her tipten eşit oranda dağıtır</td><td>Çeşitli talep</td></tr>
+        </tbody>
+      </table>
+      <div class="desc"><b>Daire Tipleri:</b> Her tipin max adedi ayarlanabilir. İstenmeyenlerin checkbox'ı kaldırılır.</div>
+      <table class="table">
+        <thead><tr><th>Tip</th><th>Alan</th><th>Değer Çarpanı</th></tr></thead>
+        <tbody>
+          <tr><td>Stüdyo</td><td>45 m²</td><td>×1.22 <span class="badge b-ye">En Yüksek</span></td></tr>
+          <tr><td>1+1</td><td>60 m²</td><td>×1.15</td></tr>
+          <tr><td>2+1</td><td>90 m²</td><td>×1.00 <span class="badge b-ya">En Yüksek Talep</span></td></tr>
+          <tr><td>3+1</td><td>120 m²</td><td>×0.88</td></tr>
+          <tr><td>4+1</td><td>160 m²</td><td>×0.75</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KESİT ═══ -->
+<div class="section" id="kesit">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--madim)">🏗️</div>
+    <div>
+      <div class="sec-title">3D Bina Kesit Görünümü</div>
+      <div class="sec-sub">Canvas tabanlı, döndürülebilir mimari render</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🔄</div>
+      <div class="card-head-title">Döndürme Kontrolleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="sc-row"><div class="sc-key">◀◀ / ▶▶</div><div class="sc-desc">30° adımlarla sol/sağ döndür</div></div>
+      <div class="sc-row"><div class="sc-key">‹ / ›</div><div class="sc-desc">8° hassas adımla döndür</div></div>
+      <div class="sc-row"><div class="sc-key">⟳</div><div class="sc-desc">Sıfırla (0° ön cephe görünümü)</div></div>
+      <div class="sc-row"><div class="sc-key">Sürükle</div><div class="sc-desc">Parmakla veya fare ile canvas üzerinde sola/sağa sürükleyerek döndür</div></div>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">15°+ açıda yan duvar perspektifi görünür. Pencere, balkon korkuluğu ve penthouse detayları aktif olur.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🎨</div>
+      <div class="card-head-title">Renk Kodları</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead><tr><th>Renk</th><th>Anlam</th></tr></thead>
+        <tbody>
+          <tr><td><span style="background:#4f83e0;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">■ Mavi</span></td><td>Konut katı</td></tr>
+          <tr><td><span style="background:#d97d00;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">■ Altın</span></td><td>Ticari / giriş kat</td></tr>
+          <tr><td><span style="background:#8b5cf6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">■ Mor</span></td><td>Ofis</td></tr>
+          <tr><td><span style="background:#6b7280;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">■ Gri</span></td><td>Sanayi</td></tr>
+          <tr><td><span style="background:#374151;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px">■ Koyu</span></td><td>Bodrum / Otopark</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HARİTA ═══ -->
+<div class="section" id="harita">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yedim)">🗺️</div>
+    <div>
+      <div class="sec-title">Harita (Pro Mod)</div>
+      <div class="sec-sub">OpenStreetMap + Nominatim ile konum arama</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🔍</div>
+      <div class="card-head-title">Filtreleme Yöntemleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <ol class="steps">
+        <li><div class="step-num">1</div><div><b>Cascade Filtre:</b> İl → İlçe → Mahalle sırasıyla seçin. Her seçim bir sonrakini filtreler. Mahalle alanına yazmaya başlayınca 800ms bekledikten sonra otomatik arama başlar.</div></li>
+        <li><div class="step-num">2</div><div><b>Serbest Arama:</b> Alt arama kutusuna adres, cadde veya koordinat girin ve 🔍 butonuna tıklayın.</div></li>
+        <li><div class="step-num">3</div><div><b>Haritaya Tıkla:</b> Haritanın herhangi bir yerine tıklayarak pin bırakın, koordinatlar otomatik kaydedilir.</div></li>
+        <li><div class="step-num">4</div><div><b>📍 GPS:</b> Tarayıcı konum iznine onay verirseniz mevcut konumunuz haritaya pinlenir.</div></li>
+      </ol>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">Proje sekmesinde seçilen il/ilçe, Harita sekmesine otomatik senkronize edilir.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ANALİZ ═══ -->
+<div class="section" id="analiz">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--mordim)">📊</div>
+    <div>
+      <div class="sec-title">Analiz Sekmesi (Pro Mod)</div>
+      <div class="sec-sub">SWOT · ROI · Canlı Döviz</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">📊</div>
+      <div class="card-head-title">SWOT — Otomatik Proje Analizi</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="desc">Proje verilerinizi okuyarak otomatik analiz üretir. Manuel giriş gerekmez.</div>
+      <table class="table">
+        <thead><tr><th>Alan</th><th>Otomatik Uyarı Koşulu</th></tr></thead>
+        <tbody>
+          <tr><td>💪 Güçlü</td><td>Parsel ≥500m², KAKS ≥2.5, kâr marjı >%50, karma kullanım, yüksek kat sayısı</td></tr>
+          <tr><td>⚠️ Zayıf</td><td>Parsel <300m², KAKS <1.5, inşaat maliyeti >22.000 ₺/m², TAKS >%55</td></tr>
+          <tr><td>🚀 Fırsat</td><td>Kentsel dönüşüm teşvikleri, konut talebi, emsal artırım potansiyeli</td></tr>
+          <tr><td>🎯 Tehdit</td><td>Enflasyon, faiz dalgalanması, deprem yükü (>10 kat), ruhsat gecikmeleri</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">💰</div>
+      <div class="card-head-title">ROI Hesabı</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="formula">
+        <div class="formula-label">FORMÜL</div>
+        <div class="formula-code">ROI (%) = (Müt. Geliri − Toplam Maliyet) / Toplam Maliyet × 100</div>
+        <div class="formula-example">Toplam Maliyet = Arsa Değeri + İnşaat Maliyeti + Diğer Giderler</div>
+      </div>
+      <table class="table">
+        <thead><tr><th>ROI Aralığı</th><th>Değerlendirme</th></tr></thead>
+        <tbody>
+          <tr><td>&gt; %30</td><td><span class="badge b-ye">✅ Güçlü Getiri</span></td></tr>
+          <tr><td>%10 – %30</td><td><span class="badge b-ya">⚠️ Orta Getiri</span></td></tr>
+          <tr><td>&lt; %10</td><td><span class="badge b-ki">❌ Düşük Getiri</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">💱</div>
+      <div class="card-head-title">Canlı Döviz Kurları</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="desc">open.er-api.com ücretsiz API kullanılır. USD/TRY, EUR/TRY, GBP/TRY, CHF/TRY ve EUR/USD kurları anlık çekilir. "🔄 Güncelle" butonu ile yenilenir. İnternet bağlantısı gerektirir.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SİMÜLATÖR ═══ -->
+<div class="section" id="simulator">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yedim)">🎮</div>
+    <div>
+      <div class="sec-title">Simülatör</div>
+      <div class="sec-sub">Hızlı tahmin + Pro finansal model</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🟢</div>
+      <div class="card-head-title">Hızlı Tahmin — Slider Modu</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="desc">Proje verisi gerekmez. 4 slider kaydırarak anlık sonuç görürsünüz:</div>
+      <table class="table">
+        <thead><tr><th>Slider</th><th>Aralık</th><th>Hesaplamadaki Rolü</th></tr></thead>
+        <tbody>
+          <tr><td>Parsel m²</td><td>100 – 5.000</td><td>Toplam inşaat = Parsel × KAKS</td></tr>
+          <tr><td>Emsal (KAKS)</td><td>0.5 – 6.0</td><td>İnşaat yoğunluğu</td></tr>
+          <tr><td>Satış ₺/m²</td><td>5K – 200K</td><td>Brüt gelir = Net alan × Fiyat</td></tr>
+          <tr><td>İnşaat ₺/m²</td><td>3K – 40K</td><td>Toplam maliyet = İnşaat m² × Birim</td></tr>
+        </tbody>
+      </table>
+      <div class="formula">
+        <div class="formula-label">HESAPLAR</div>
+        <div class="formula-code">Net Alan = Toplam m² × 0.75 (ortak alan düşüldükten sonra)<br>Daire Sayısı = Net Alan ÷ 90 m² (ortalama)<br>Brüt Gelir = Net Alan × Satış Fiyatı<br>Net Kâr = Brüt Gelir − (İnşaat m² × Birim Maliyet)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">⚡</div>
+      <div class="card-head-title">Pro Finansal Analiz (Pro Mod)</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="warn"><div class="tip-icon">⚠️</div><div class="warn-text">Pro Analiz için önce Proje sekmesine parsel verisi girilmiş olmalıdır.</div></div>
+      <table class="table">
+        <thead><tr><th>Parametre</th><th>Etkisi</th></tr></thead>
+        <tbody>
+          <tr><td>Yapım Süresi</td><td>Faiz maliyeti bu süre üzerinden hesaplanır</td></tr>
+          <tr><td>Satış Süresi</td><td>Enflasyonlu satış fiyatı bu ek süreye göre artar</td></tr>
+          <tr><td>Faiz %/yıl</td><td>Faiz Maliyeti = İnşaat Maliyeti × (Faiz%) × (Süre/12)</td></tr>
+          <tr><td>Enflasyon %/yıl</td><td>Hem maliyet artışı hem satış fiyatı artışı modellenir</td></tr>
+          <tr><td>Ruhsat & İzin</td><td>Sabit gider olarak eklenir</td></tr>
+          <tr><td>Pazarlama %</td><td>Net satılabilir m² × satış fiyatı × pazarlama%</td></tr>
+        </tbody>
+      </table>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">Pro Analiz sonuçları Çıktı sekmesindeki Zaman Planını otomatik günceller.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ÇIKTI ═══ -->
+<div class="section" id="cikti">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--madim)">📤</div>
+    <div>
+      <div class="sec-title">Çıktı & Paylaşım</div>
+      <div class="sec-sub">6 farklı çıktı yöntemi</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">📤</div>
+      <div class="card-head-title">Çıktı Seçenekleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <table class="table">
+        <thead><tr><th>Buton</th><th>Ne Yapar?</th></tr></thead>
+        <tbody>
+          <tr><td>🖨️ Yazdır</td><td>Tarayıcı yazdırma ekranını açar. Tüm sekme içerikleri ve özet dahil olur.</td></tr>
+          <tr><td>🔗 Paylaş</td><td>Tarayıcı native share menüsü açılır (mobilde). PC'de Kopyala'ya düşer.</td></tr>
+          <tr><td>💬 Uzmana Sor</td><td>WhatsApp'a proje özeti hazır metin olarak yapıştırılmış şekilde açılır.</td></tr>
+          <tr><td>📊 Excel/CSV</td><td>SheetJS ile .xlsx dosyası indirilir. Sütunlar otomatik ayarlıdır. XLSX yoksa CSV'ye düşer.</td></tr>
+          <tr><td>📋 Kopyala</td><td>Proje özetini panoya kopyalar — SMS veya e-posta için hazır metin.</td></tr>
+          <tr><td>📲 Kur</td><td>PWA kurulum: Chrome'da "Ana ekrana ekle" ile uygulamayı yükler. Çevrimdışı çalışır.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TERİMLER: İMAR ═══ -->
+<div class="section" id="terimler-imar">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">📐</div>
+    <div>
+      <div class="sec-title">İmar Terimleri Sözlüğü</div>
+      <div class="sec-sub">Hesaplama formülleriyle birlikte</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">📏</div>
+      <div class="card-head-title">TAKS — Taban Alan Katsayısı</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="formula">
+        <div class="formula-label">FORMÜL</div>
+        <div class="formula-code">Taban Alan (m²) = Parsel Alanı × TAKS</div>
+        <div class="formula-example">Örnek: 500 m² × 0.40 = 200 m² taban alanı</div>
+      </div>
+      <table class="table">
+        <thead><tr><th>Bölge</th><th>Tipik TAKS</th></tr></thead>
+        <tbody>
+          <tr><td>Konut bölgesi</td><td>0.20 – 0.40</td></tr>
+          <tr><td>Ticari bölge</td><td>0.40 – 0.60</td></tr>
+          <tr><td>Sanayi bölgesi</td><td>0.50 – 0.70</td></tr>
+        </tbody>
+      </table>
+      <div class="tip"><div class="tip-icon">💡</div><div class="tip-text">Düşük TAKS → Daha fazla yeşil alan. Yüksek TAKS → Arsa daha verimli kullanılır ama açık alan azalır.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">📐</div>
+      <div class="card-head-title">KAKS / Emsal — Kat Alanı Katsayısı</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="formula">
+        <div class="formula-label">FORMÜLLER</div>
+        <div class="formula-code">Toplam İnşaat (m²) = Parsel Alanı × KAKS<br>Yaklaşık Kat Sayısı = KAKS ÷ TAKS</div>
+        <div class="formula-example">Örnek: 500 m² × 2.0 = 1.000 m² · Kat sayısı: 2.0÷0.40 = 5 kat</div>
+      </div>
+      <table class="table">
+        <thead><tr><th>Emsal</th><th>Yoğunluk</th><th>Tipik Bölge</th></tr></thead>
+        <tbody>
+          <tr><td>0.5 – 1.0</td><td>Düşük</td><td>Villalar, müstakil</td></tr>
+          <tr><td>1.0 – 2.5</td><td>Orta</td><td>Apartman, konut siteleri</td></tr>
+          <tr><td>2.5 – 4.0+</td><td>Yüksek</td><td>Merkezi ticari, karma</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">📋</div>
+      <div class="card-head-title">İmar Planı Türleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead><tr><th>Plan</th><th>Ölçek</th><th>İçerik</th></tr></thead>
+        <tbody>
+          <tr><td>Nazım İmar Planı</td><td>1/5.000</td><td>Genel arazi kullanım kararları, ulaşım sistemi, bölge kararları</td></tr>
+          <tr><td>Uygulama İmar Planı</td><td>1/1.000</td><td>TAKS, KAKS, H kotu, yapı yaklaşma mesafeleri, parsel bazlı kararlar</td></tr>
+        </tbody>
+      </table>
+      <div class="desc"><b>H Kotu:</b> Maksimum yapı yüksekliği (metre)<br><b>Yapı Yaklaşma Mesafesi:</b> Parsel sınırına minimum uzaklık<br><b>İmar Adası:</b> Yollarla çevrili yapı bloğu</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🏛️</div>
+      <div class="card-head-title">Yapı Ruhsatı Süreci</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <ol class="steps">
+        <li><div class="step-num">1</div><div>İmar durumu belgesi alınması (ilgili belediyeden)</div></li>
+        <li><div class="step-num">2</div><div>Zemin etüt raporu hazırlanması (lisanslı kurum)</div></li>
+        <li><div class="step-num">3</div><div>Mimari + Statik + Mekanik/Elektrik projeler (ilgili mühendis)</div></li>
+        <li><div class="step-num">4</div><div>Belediyeye başvuru, harç ve belgeler teslimi</div></li>
+        <li><div class="step-num">5</div><div>Proje incelemesi ve onayı</div></li>
+        <li><div class="step-num">6</div><div>Yapı ruhsatı düzenlenmesi</div></li>
+      </ol>
+      <div class="tip"><div class="tip-icon">📋</div><div class="tip-text">Tapu fotokopisi + Mimari projeler (4 takım) + Zemin etüdü + Yapı denetim sözleşmesi + Proje müellif taahhütnameleri gerekir.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TERİMLER: KAT KARŞILIĞI ═══ -->
+<div class="section" id="terimler-kk">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">🤝</div>
+    <div>
+      <div class="sec-title">Kat Karşılığı Rehberi</div>
+      <div class="sec-sub">Arsa sahibi + müteahhit ilişkisi</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🤝</div>
+      <div class="card-head-title">Kat Karşılığı Nedir?</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <div class="desc">Arsa sahibi, arsasını müteahhite inşaat yapması karşılığında verir. Bedel nakit değil, tamamlanan binadan pay olarak ödenir.</div>
+      <div class="grid2">
+        <div class="info-card">
+          <div class="info-card-title">🏠 Arsa Sahibi İçin</div>
+          <div class="info-card-text">
+            + Nakit ödeme yapmadan yapılaşır<br>
+            + Arsa değerini daire olarak realize eder<br>
+            + İnşaat riskini müteahhit üstlenir<br>
+            − Projenin uzaması riski<br>
+            − Teslim kalitesi riski
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">🏗️ Müteahhit İçin</div>
+          <div class="info-card-text">
+            + Arsa bedeli ödemeden proje<br>
+            + Kaldıraçlı yatırım imkânı<br>
+            + Konum avantajı<br>
+            − Arsa bulma ve anlaşma süreci<br>
+            − Piyasa düşüşü riski
+          </div>
+        </div>
+      </div>
+      <div class="formula">
+        <div class="formula-label">TİPİK ORANLAR</div>
+        <div class="formula-code">Arsa Sahibi: %35 – %45<br>Müteahhit:   %55 – %65</div>
+        <div class="formula-example">Oranı etkileyen: konum, emsal, inşaat maliyeti, piyasa koşulları</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🤲</div>
+      <div class="card-head-title">Arsa Payı Nasıl Hesaplanır?</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <div class="formula">
+        <div class="formula-label">FORMÜL</div>
+        <div class="formula-code">Payınız (%) = Daireniz m² ÷ Net Toplam m² × 100</div>
+        <div class="formula-example">Tapuda "50/1000" → Parselin %5'i sizin</div>
+      </div>
+      <div class="desc"><b>Kentsel Dönüşüm Eşikleri:</b></div>
+      <table class="table">
+        <thead><tr><th>Arsa Payınız</th><th>Sonuç</th></tr></thead>
+        <tbody>
+          <tr><td>&lt; 1/3</td><td>Azınlıkta kalırsınız — kararı etkileyemezsiniz</td></tr>
+          <tr><td>≥ 2/3</td><td>Çoğunluk kararı alabilirsiniz — güçlü pozisyon</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">📝</div>
+      <div class="card-head-title">Sözleşme Türleri</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead><tr><th>Tür</th><th>Özellik</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Kat Karşılığı</td><td>Arsa + inşaat karşılığı daire paylaşımı</td><td>Piyasa riski paylaşımlı</td></tr>
+          <tr><td>Anahtar Teslim</td><td>Sabit fiyat, tanımlı kapsam</td><td>Risk müteahhitte</td></tr>
+          <tr><td>Birim Fiyat</td><td>İş miktarına göre ödeme</td><td>Değişken kesin hesap</td></tr>
+          <tr><td>Maliyet + Kâr</td><td>Gerçek maliyet + marj</td><td>Maliyet aşımı riski</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TERİMLER: MALİYET ═══ -->
+<div class="section" id="terimler-maliyet">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yedim)">💰</div>
+    <div>
+      <div class="sec-title">Maliyet Rehberi — 2026 Q1</div>
+      <div class="sec-sub">Güncel piyasa verileri</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">🧱</div>
+      <div class="card-head-title">Yapım Maliyeti Tablosu</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <table class="table">
+        <thead><tr><th>Sınıf</th><th>₺/m² Aralığı</th><th>Özellik</th></tr></thead>
+        <tbody>
+          <tr><td>A Sınıfı (Lüks+)</td><td>40.000 – 75.000+</td><td>Akıllı bina, ithal malzeme, özel tasarım</td></tr>
+          <tr><td>B Sınıfı (Orta-Üst)</td><td>24.000 – 40.000</td><td>Kaliteli yerli malzeme, yüksek standart</td></tr>
+          <tr><td>C Sınıfı (Standart)</td><td>16.000 – 24.000</td><td>Orta kalite, yaygın tip</td></tr>
+          <tr><td>D Sınıfı (Ekonomik)</td><td>10.000 – 16.000</td><td>Minimum standart</td></tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <thead><tr><th>Yapı Sistemi</th><th>Kaba Yapı ₺/m²</th></tr></thead>
+        <tbody>
+          <tr><td>Betonarme</td><td>7.000 – 12.000</td></tr>
+          <tr><td>Çelik Konstrüksiyon</td><td>12.000 – 18.000</td></tr>
+          <tr><td>Prefabrik</td><td>5.500 – 9.000</td></tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <thead><tr><th>Şehir</th><th>Ortalama ₺/m² (2026 Q1)</th></tr></thead>
+        <tbody>
+          <tr><td>İstanbul</td><td>20.000 – 26.000</td></tr>
+          <tr><td>Ankara</td><td>18.000 – 23.000</td></tr>
+          <tr><td>İzmir</td><td>19.000 – 24.000</td></tr>
+          <tr><td>Diğer</td><td>14.000 – 20.000</td></tr>
+        </tbody>
+      </table>
+      <div class="warn"><div class="tip-icon">⚠️</div><div class="warn-text">Enflasyon ve döviz kuru nedeniyle ±%30 sapma olabilir. Kesin fiyat için ÇŞİDB Birim Fiyat Listesi'ni kontrol edin.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TERİMLER: TAPU ═══ -->
+<div class="section" id="terimler-tapu">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:var(--yadim)">📜</div>
+    <div>
+      <div class="sec-title">Tapu Senedi Okuma Rehberi</div>
+      <div class="sec-sub">Her alan ne anlama gelir?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head open" onclick="toggle(this)">
+      <div class="card-head-icon">📜</div>
+      <div class="card-head-title">Tapu Alanları</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body show">
+      <table class="table">
+        <thead><tr><th>Alan</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td>İl / İlçe / Mahalle</td><td>Taşınmazın tam adresi. İmar ve değerleme sorgulamalarında temel referans.</td></tr>
+          <tr><td>Ada No</td><td>Yollarla çevrili yapı bloğunun kadastro numarası.</td></tr>
+          <tr><td>Parsel No</td><td>Ada içindeki tek arazi biriminin numarası. TKGM e-Devlet sorgusu için zorunlu.</td></tr>
+          <tr><td>Yüzölçümü</td><td>Parselin toplam alanı (m²). Tüm inşaat hesaplarının temel girdisi.</td></tr>
+          <tr><td>Niteliği</td><td>Kullanım türü: ARSA (yapılabilir), TARLA (tarım), BAĞ/BAHÇE vb. Ruhsat için "arsa" şart.</td></tr>
+          <tr><td>Hisse / Arsa Payı</td><td>Kat mülkiyetinde bağımsız bölüme düşen pay. "50/1000" = parselin %5'i.</td></tr>
+          <tr><td>Edinme Sebebi</td><td>Satış / Bağış / Miras / Kat Karşılığı. Vergi ve uyuşmazlıklarda delil.</td></tr>
+          <tr><td>Bağımsız Bölüm</td><td>Daire/ofis/dükkan no ve kat bilgisi. Brüt m² ≠ Net m² — sözleşmede net talep edin.</td></tr>
+          <tr><td>Beyan / Şerh</td><td>İpotek, haciz, irtifak hakkı burada görünür. Satın almadan önce mutlaka kontrol edin.</td></tr>
+        </tbody>
+      </table>
+      <div class="tip"><div class="tip-icon">🔍</div><div class="tip-text">TKGM e-Devlet "Tapu Sorgulama" ile kayıt, beyan ve şerh durumunu ücretsiz doğrulayabilirsiniz.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🌍</div>
+      <div class="card-head-title">Deprem Yönetmeliği (TBDY 2018)</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead><tr><th>Sınıf</th><th>Tanım</th><th>Önem Katsayısı</th></tr></thead>
+        <tbody>
+          <tr><td>BKS-1</td><td>Kritik tesisler (hastane, okul)</td><td>I = 1.5</td></tr>
+          <tr><td>BKS-2</td><td>Önemli binalar</td><td>I = 1.2</td></tr>
+          <tr><td>BKS-3</td><td>Normal binalar (konut/ofis)</td><td>I = 1.0</td></tr>
+          <tr><td>BKS-4</td><td>Geçici yapılar</td><td>I = 0.8</td></tr>
+        </tbody>
+      </table>
+      <div class="warn"><div class="tip-icon">⚠️</div><div class="warn-text">10 kattan yüksek binalar için ek statik hesap gerekir. 70m+ binalarda performans bazlı tasarım zorunludur.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="toggle(this)">
+      <div class="card-head-icon">🏚️</div>
+      <div class="card-head-title">Kentsel Dönüşüm (6306 Sayılı Kanun)</div>
+      <div class="card-chevron">▶</div>
+    </div>
+    <div class="card-body">
+      <ol class="steps">
+        <li><div class="step-num">1</div><div>Lisanslı kurum ile riskli yapı tespiti</div></li>
+        <li><div class="step-num">2</div><div>Tapu müdürlüğüne şerh tescili</div></li>
+        <li><div class="step-num">3</div><div>Malikler 60 gün müzakere süreci</div></li>
+        <li><div class="step-num">4</div><div>2/3 çoğunluk kararı → yıkım ve yapım</div></li>
+        <li><div class="step-num">5</div><div>Azınlık payları zorla satış prosedürüne girer</div></li>
+      </ol>
+      <table class="table">
+        <thead><tr><th>Avantaj</th><th>Detay</th></tr></thead>
+        <tbody>
+          <tr><td>KDV</td><td>%1 (normal %20)</td></tr>
+          <tr><td>Tapu Harcı</td><td>Muaf</td></tr>
+          <tr><td>Kira Yardımı</td><td>Büyükşehir: ₺10.000/ay · Diğer: ₺7.500/ay (maks 18 ay)</td></tr>
+          <tr><td>Kredi</td><td>Faiz sübvansiyonu imkânı</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+// ── THEME ──
+function toggleTheme(){
+  const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelector('.hbtn-o').textContent=t==='dark'?'🌙 Tema':'☀️ Tema';
+}
+
+// ── ACCORDION ──
+function toggle(head){
+  head.classList.toggle('open');
+  const body=head.nextElementSibling;
+  body.classList.toggle('show');
+}
+
+// ── SIDEBAR ACTIVE ──
+function setActive(el){
+  document.querySelectorAll('.s-link').forEach(l=>l.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll',function(){
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=h>0?(window.scrollY/h*100):0;
+  document.getElementById('prog').style.width=pct+'%';
+  // Update active sidebar link
+  const sections=document.querySelectorAll('.section,[id]');
+  let current='';
+  sections.forEach(function(s){
+    if(window.scrollY>=s.offsetTop-100)current=s.id;
+  });
+  if(current){
+    const link=document.querySelector('.s-link[href="#'+current+'"]');
+    if(link){
+      document.querySelectorAll('.s-link').forEach(l=>l.classList.remove('active'));
+      link.classList.add('active');
+    }
+  }
+});
+</script>
+</body>
+</html>
